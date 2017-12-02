@@ -44,6 +44,13 @@ public:
     }
 };
 
+Player* player;
+
+int sign(int x)
+{
+    return (x>0?1:(x?-1:0));
+}
+
 class Hitbox: public Object
 {
 public:
@@ -54,21 +61,32 @@ public:
         gen_corners();
     }
 
+    Hitbox(int x, int y, std::string s): Object(x,y,s){}
+
     void update()
     {
+        if (collides(player))
+        {
+            if (player->pos[0] == pos[0] && player->pos[1] == pos[1]) ++player->pos[0];
 
+            int dir = abs(player->pos[0]-pos[0]) < abs(player->pos[1]-pos[1]);
+
+            do
+            {
+                player->pos[dir] += sign(player->pos[dir]-pos[dir]);
+                player->gen_corners();
+            } while (collides(player));
+        }
     }
-
-    void render() {}
 };
 
 int main(int argc, char* args[])
 {
     render_init();
 
-    Player* player = new Player();
+    player = new Player();
 
-    Object* obj = new Object(20,20,"Player");
+    new Hitbox(20,20,"Player");
 
     //SDL_SetRenderDrawBlendMode(renderer,SDL_BLENDMODE_BLEND);
     SDL_Event e;
@@ -93,8 +111,6 @@ int main(int argc, char* args[])
             o->update();
             o->render();
         }
-
-        std::cout << player->collides(obj);
 
         SDL_RenderPresent(renderer);
         limit_fps();

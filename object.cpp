@@ -1,5 +1,6 @@
 #include "object.h"
 #include "rendering.h"
+#include <iostream>
 
 std::deque<Object*> objects;
 
