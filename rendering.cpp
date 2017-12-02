@@ -39,9 +39,8 @@ void render_init()
 
     SDL_DisplayMode current;
     SDL_GetDesktopDisplayMode(0, &current);
-    if (fullscreen) zoom = std::min(current.w/window[0], current.h/window[1]);
 
-    renderwindow = SDL_CreateWindow("LD 40", 50, 50, window[0]*zoom, window[1]*zoom, SDL_WINDOW_SHOWN | (fullscreen&SDL_WINDOW_FULLSCREEN));
+    renderwindow = SDL_CreateWindow("LD 40", 50, 50, fullscreen?current.w:window[0]*zoom, fullscreen?current.h:window[1]*zoom, SDL_WINDOW_SHOWN | (fullscreen&SDL_WINDOW_FULLSCREEN));
     renderer = SDL_CreateRenderer(renderwindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
     SDL_RenderSetLogicalSize(renderer, window[0], window[1]);
