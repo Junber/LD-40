@@ -18,7 +18,7 @@ void render_init()
 std::map<std::string,SDL_Texture*> loaded_textures;
 SDL_Texture* load_image(std::string s)
 {
-    if (!loaded_textures.count(s)) loaded_textures[s] = IMG_LoadTexture(renderer,("Data\\Graphics\\"+s+".png").c_str());
+    if (!loaded_textures.count(s)) loaded_textures[s] = IMG_LoadTexture(renderer,(std::string("Data")+PATH_SEPARATOR+"Graphics"+PATH_SEPARATOR+s+".png").c_str());
 
     return loaded_textures[s];
 }

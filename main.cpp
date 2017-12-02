@@ -8,6 +8,7 @@
 
 #include "object.h"
 #include "rendering.h"
+#include "font.h"
 
 #ifndef _STATIC
 void *__gxx_personality_v0;
@@ -35,12 +36,18 @@ public:
     {
         const Uint8* state = SDL_GetKeyboardState(nullptr);
 
+        int last_pos[2] = {pos[0], pos[1]};
+
         if (state[SDL_SCANCODE_D]) pos[0] += movement_speed;
         else if (state[SDL_SCANCODE_A]) pos[0] -= movement_speed;
         if (state[SDL_SCANCODE_S]) pos[1] += movement_speed;
         else if (state[SDL_SCANCODE_W]) pos[1] -= movement_speed;
 
-        gen_corners();
+        if (last_pos[0] != pos[0]  || last_pos[1] != pos[1])
+        {
+            rotation = std::atan2(pos[1]-last_pos[1], pos[0]-last_pos[0])*180/M_PI;
+            gen_corners();
+        }
     }
 };
 
@@ -80,9 +87,42 @@ public:
     }
 };
 
+void visual_novel(SDL_Texture* tex, std::string text)
+{
+    SDL_Event e;
+	while (!breakk)
+    {
+        while(SDL_PollEvent(&e))
+        {
+			if (e.type == SDL_QUIT) breakk = true;
+
+			else if (e.type == SDL_KEYDOWN)
+			{
+			    if (e.key.keysym.sym == SDLK_ESCAPE) breakk = true;
+			}
+        }
+
+        SDL_SetRenderDrawColor(renderer,255,255,255,255);
+        SDL_RenderClear(renderer);
+        SDL_RenderCopy(renderer,tex,nullptr,nullptr);
+
+        render_text(100,200,add_newlines(text,300),100);
+
+        for (Object* o: objects)
+        {
+            o->update();
+            o->render();
+        }
+
+        SDL_RenderPresent(renderer);
+        limit_fps();
+    }
+}
+
 int main(int argc, char* args[])
 {
     render_init();
+    font_init();
 
     player = new Player();
 
@@ -99,7 +139,7 @@ int main(int argc, char* args[])
 			else if (e.type == SDL_KEYDOWN)
 			{
 			    if (e.key.keysym.sym == SDLK_ESCAPE) breakk = true;
-			    if (e.key.keysym.sym == SDLK_e) player->rotation+=45;
+			    if (e.key.keysym.sym == SDLK_e) visual_novel(load_image("Player"),"Hello. This text is a test. Testing. Testing! TESING!! Hopefully this works.");
 			}
         }
 
@@ -109,6 +149,9 @@ int main(int argc, char* args[])
         for (Object* o: objects)
         {
             o->update();
+        }
+        for (Object* o: objects)
+        {
             o->render();
         }
 
