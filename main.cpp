@@ -106,13 +106,7 @@ void visual_novel(SDL_Texture* tex, std::string text)
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer,tex,nullptr,nullptr);
 
-        render_text(100,200,add_newlines(text,300),100);
-
-        for (Object* o: objects)
-        {
-            o->update();
-            o->render();
-        }
+        render_text(10,100,add_newlines(text,300),100);
 
         SDL_RenderPresent(renderer);
         limit_fps();

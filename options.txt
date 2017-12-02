@@ -1,0 +1,5 @@
+#change fullscreen:1 to fullscreen:0 to turn off fullscreen
+fullscreen:1
+
+#zoom is only in effect if fullscreen is turned off
+zoom:3
