@@ -10,7 +10,7 @@ SDL_Renderer* renderer;
 
 const int window[2] = {320,180};
 int zoom = 1;
-bool fullscreen = true;//false;
+bool fullscreen = false;
 
 void load_options()
 {
@@ -34,6 +34,8 @@ void render_init()
 {
     SDL_Init(SDL_INIT_EVERYTHING);
     IMG_Init(IMG_INIT_PNG);
+
+    load_options();
 
     SDL_DisplayMode current;
     SDL_GetDesktopDisplayMode(0, &current);
