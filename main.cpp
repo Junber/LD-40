@@ -75,12 +75,32 @@ public:
     }
 };
 
+class Player: public Object
+{
+    const int movement_speed = 2;
+
+public:
+    Player(): Object(0,0,"Player") {}
+
+    void update()
+    {
+        const Uint8* state = SDL_GetKeyboardState(nullptr);
+
+        if (state[SDL_SCANCODE_D]) pos[0] += movement_speed;
+        else if (state[SDL_SCANCODE_A]) pos[0] -= movement_speed;
+        if (state[SDL_SCANCODE_S]) pos[1] += movement_speed;
+        else if (state[SDL_SCANCODE_W]) pos[1] -= movement_speed;
+    }
+};
+
 int main(int argc, char* args[])
 {
     IMG_Init(IMG_INIT_PNG);
 
     renderwindow = SDL_CreateWindow("LD 40", 50, 50, window[0], window[1], SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(renderwindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+
+    new Player();
 
     //SDL_SetRenderDrawBlendMode(renderer,SDL_BLENDMODE_BLEND);
     SDL_Event e;
