@@ -6,7 +6,7 @@
 
 namespace drunkenness
 {
-    extern int blick_frequency;
+    extern int blick_frequency, blur;
 }
 
 int random(int x, int y);

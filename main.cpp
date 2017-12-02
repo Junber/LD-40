@@ -147,7 +147,7 @@ int main(int argc, char* args[])
 
     new Hitbox(100,100,"Player");
 
-    //SDL_SetRenderDrawBlendMode(renderer,SDL_BLENDMODE_BLEND);
+    SDL_SetRenderDrawBlendMode(renderer,SDL_BLENDMODE_BLEND);
     SDL_Event e;
 	while (!breakk)
     {
@@ -162,8 +162,8 @@ int main(int argc, char* args[])
 			}
         }
 
-        SDL_SetRenderDrawColor(renderer,255,255,255,255);
-        SDL_RenderClear(renderer);
+        SDL_SetRenderDrawColor(renderer,255,255,255,drunkenness::blur);
+        SDL_RenderFillRect(renderer,nullptr);
 
         player->update();
         for (Object* o: objects)
@@ -174,6 +174,7 @@ int main(int argc, char* args[])
         std::stable_sort(objects.begin(), objects.end(), sort_criteria);
         for (Object* o: objects)
         {
+            SDL_SetTextureAlphaMod(o->anim.first,drunkenness::blur);
             o->render();
         }
 

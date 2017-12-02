@@ -4,6 +4,7 @@
 #include <deque>
 #include <algorithm>
 #include <SDL_image.h>
+#include <string>
 
 typedef std::pair<SDL_Texture*, std::deque<int> > animation;
 

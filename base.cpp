@@ -5,7 +5,7 @@
 
 namespace drunkenness
 {
-    int blick_frequency = 600;
+    int blick_frequency = 600, blur = 255;
 }
 
 std::default_random_engine generator;
