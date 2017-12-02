@@ -8,6 +8,8 @@
 
 typedef std::pair<SDL_Texture*, std::deque<int> > animation;
 
+extern int camera[2];
+
 template<class t> void remove_it(std::deque<t>* base, t thing)
 {
     base->erase( std::remove( std::begin(*base), std::end(*base), thing ), std::end(*base) );

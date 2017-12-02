@@ -4,6 +4,8 @@
 
 std::deque<Object*> objects;
 
+int camera[2] = {0,0};
+
 Object::Object(int x, int y, std::string s)
 {
     pos[0] = x;
@@ -51,7 +53,7 @@ void Object::update(bool increase_anim_time)
 
 void Object::render()
 {
-    SDL_Rect dest={pos[0]-size[0]/2, pos[1]-size[1]/2, size[0], size[1]},
+    SDL_Rect dest={pos[0]-size[0]/2-camera[0], pos[1]-size[1]/2-camera[1], size[0], size[1]},
                 src = {0, size[1]*cur_anim_frame, size[0], size[1]};
 
     SDL_RenderCopyEx(renderer, anim.first, &src, &dest, rotation, nullptr, flipped?SDL_FLIP_HORIZONTAL:SDL_FLIP_NONE);

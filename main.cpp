@@ -10,12 +10,14 @@
 #include "rendering.h"
 #include "font.h"
 #include "base.h"
+#include "player.h"
 
 #ifndef _STATIC
 void *__gxx_personality_v0;
 #endif
 
 bool breakk = false;
+Player* player;
 
 int last_time;
 float wait;
@@ -25,49 +27,6 @@ void limit_fps()
     if (wait>0) SDL_Delay(wait);
     last_time = SDL_GetTicks();
 }
-
-class Player: public Object
-{
-    const int movement_speed = 2;
-
-public:
-    Player(): Object(0,0,"walk1")
-    {
-        anim.second[0] = 5;
-        for (int i=0; i<5; ++i) anim.second.push_back(5);
-        size[1] /= 6;
-
-        hitbox_size[1] = 6;
-        hitbox_offset[1] = 18;
-
-        gen_corners();
-    }
-
-    void update(bool increase_anim_time=true)
-    {
-        const Uint8* state = SDL_GetKeyboardState(nullptr);
-
-        int last_pos[2] = {pos[0], pos[1]};
-
-        if (state[SDL_SCANCODE_D]) pos[0] += movement_speed;
-        else if (state[SDL_SCANCODE_A]) pos[0] -= movement_speed;
-        if (state[SDL_SCANCODE_S]) pos[1] += movement_speed;
-        else if (state[SDL_SCANCODE_W]) pos[1] -= movement_speed;
-
-        if (last_pos[0] != pos[0]  || last_pos[1] != pos[1])
-        {
-            //rotation = std::atan2(pos[1]-last_pos[1], pos[0]-last_pos[0])*180/M_PI;
-            gen_corners();
-            cur_anim_time++;
-        }
-
-        if (last_pos[0] != pos[0]) flipped = last_pos[0] > pos[0];
-
-        Object::update(false);
-    }
-};
-
-Player* player;
 
 int sign(int x)
 {
