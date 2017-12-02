@@ -1,4 +1,25 @@
 #include "base.h"
+#include <random>
+#include <time.h>
+
+
+namespace drunkenness
+{
+    int blick_frequency = 600;
+}
+
+std::default_random_engine generator;
+int random(int x, int y)
+{
+    std::uniform_int_distribution<int> distribution(x,y);
+    return distribution(generator);
+}
+
+void random_init()
+{
+    generator.seed(time(nullptr));
+    random(0,1);
+}
 
 std::deque<std::string> split(std::string s, char seperator)
 {

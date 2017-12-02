@@ -11,6 +11,7 @@
 #endif
 
 extern SDL_Renderer* renderer;
+extern const int window[2];
 
 void render_init();
 SDL_Texture* load_image(std::string s);

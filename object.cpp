@@ -11,8 +11,18 @@ Object::Object(int x, int y, std::string s)
 
     rotation = 0;
 
-    tex = load_image(s);
-    SDL_QueryTexture(tex, nullptr, nullptr, &size[0], &size[1]);
+    anim.first = load_image(s);
+    anim.second.push_back(-1);
+    cur_anim_frame = cur_anim_time = 0;
+
+    SDL_QueryTexture(anim.first, nullptr, nullptr, &size[0], &size[1]);
+
+    hitbox_size[0] = size[0];
+    hitbox_size[1] = size[1];
+    hitbox_offset[0] = 0;
+    hitbox_offset[1] = 0;
+
+    flipped = false;
 
     gen_corners();
 
@@ -24,11 +34,27 @@ Object::~Object()
     remove_it(&objects, this);
 }
 
+void Object::update(bool increase_anim_time)
+{
+    if (anim.second[cur_anim_frame] > 0)
+    {
+        if (increase_anim_time) ++cur_anim_time;
+
+        if (cur_anim_time > anim.second[cur_anim_frame])
+        {
+            ++cur_anim_frame;
+            cur_anim_frame %= anim.second.size();
+            cur_anim_time=0;
+        }
+    }
+}
+
 void Object::render()
 {
-    SDL_Rect r={pos[0]-size[0]/2, pos[1]-size[1]/2, size[0], size[1]};
+    SDL_Rect dest={pos[0]-size[0]/2, pos[1]-size[1]/2, size[0], size[1]},
+                src = {0, size[1]*cur_anim_frame, size[0], size[1]};
 
-    SDL_RenderCopyEx(renderer, tex, nullptr, &r, rotation, nullptr, SDL_FLIP_NONE);
+    SDL_RenderCopyEx(renderer, anim.first, &src, &dest, rotation, nullptr, flipped?SDL_FLIP_HORIZONTAL:SDL_FLIP_NONE);
 }
 
 void Object::gen_corners()
@@ -38,8 +64,8 @@ void Object::gen_corners()
     {
         for (int u=-1; u<=1; u+=2)
         {
-            corners[i+1+(u+1)/2][0] = i*size[0]/2*std::cos(angle) - u*size[1]/2*std::sin(angle)+pos[0];
-            corners[i+1+(u+1)/2][1] = i*size[0]/2*std::sin(angle) + u*size[1]/2*std::cos(angle)+pos[1];
+            corners[i+1+(u+1)/2][0] = i*hitbox_size[0]/2*std::cos(angle) - u*hitbox_size[1]/2*std::sin(angle)+pos[0]+hitbox_offset[0];
+            corners[i+1+(u+1)/2][1] = i*hitbox_size[0]/2*std::sin(angle) + u*hitbox_size[1]/2*std::cos(angle)+pos[1]+hitbox_offset[1];
 
             //std::cout << "["<< i+1+(u+1)/2 << ": "<< corners[i+1+(u+1)/2][0] <<","<< corners[i+1+(u+1)/2][1] << "]";
         }

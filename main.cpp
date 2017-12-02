@@ -9,6 +9,7 @@
 #include "object.h"
 #include "rendering.h"
 #include "font.h"
+#include "base.h"
 
 #ifndef _STATIC
 void *__gxx_personality_v0;
@@ -30,9 +31,19 @@ class Player: public Object
     const int movement_speed = 2;
 
 public:
-    Player(): Object(0,0,"Player") {}
+    Player(): Object(0,0,"walk1")
+    {
+        anim.second[0] = 5;
+        for (int i=0; i<5; ++i) anim.second.push_back(5);
+        size[1] /= 6;
 
-    void update()
+        hitbox_size[1] = 6;
+        hitbox_offset[1] = 18;
+
+        gen_corners();
+    }
+
+    void update(bool increase_anim_time=true)
     {
         const Uint8* state = SDL_GetKeyboardState(nullptr);
 
@@ -45,9 +56,14 @@ public:
 
         if (last_pos[0] != pos[0]  || last_pos[1] != pos[1])
         {
-            rotation = std::atan2(pos[1]-last_pos[1], pos[0]-last_pos[0])*180/M_PI;
+            //rotation = std::atan2(pos[1]-last_pos[1], pos[0]-last_pos[0])*180/M_PI;
             gen_corners();
+            cur_anim_time++;
         }
+
+        if (last_pos[0] != pos[0]) flipped = last_pos[0] > pos[0];
+
+        Object::update(false);
     }
 };
 
@@ -70,17 +86,18 @@ public:
 
     Hitbox(int x, int y, std::string s): Object(x,y,s){}
 
-    void update()
+    void update(bool increase_anim_time=true)
     {
         if (collides(player))
         {
             if (player->pos[0] == pos[0] && player->pos[1] == pos[1]) ++player->pos[0];
 
-            int dir = abs(player->pos[0]-pos[0]) < abs(player->pos[1]-pos[1]);
+            int dir = abs(player->pos[0]+player->hitbox_offset[0]-pos[0]-hitbox_offset[0]) <
+                      abs(player->pos[1]+player->hitbox_offset[1]-pos[1]-hitbox_offset[1]);
 
             do
             {
-                player->pos[dir] += sign(player->pos[dir]-pos[dir]);
+                player->pos[dir] += sign(player->pos[dir]+player->hitbox_offset[dir]-pos[dir]-hitbox_offset[dir]);
                 player->gen_corners();
             } while (collides(player));
         }
@@ -113,14 +130,22 @@ void visual_novel(SDL_Texture* tex, std::string text)
     }
 }
 
+bool sort_criteria(Object* a, Object* b)
+{
+    return a->pos[1]+a->hitbox_offset[1] < b->pos[1]+b->hitbox_offset[1];
+}
+
 int main(int argc, char* args[])
 {
+    int blick_progress = -1;
+
+    random_init();
     render_init();
     font_init();
 
     player = new Player();
 
-    new Hitbox(20,20,"Player");
+    new Hitbox(100,100,"Player");
 
     //SDL_SetRenderDrawBlendMode(renderer,SDL_BLENDMODE_BLEND);
     SDL_Event e;
@@ -140,13 +165,49 @@ int main(int argc, char* args[])
         SDL_SetRenderDrawColor(renderer,255,255,255,255);
         SDL_RenderClear(renderer);
 
+        player->update();
         for (Object* o: objects)
         {
-            o->update();
+            if (o != player) o->update();
         }
+
+        std::stable_sort(objects.begin(), objects.end(), sort_criteria);
         for (Object* o: objects)
         {
             o->render();
+        }
+
+        if (blick_progress >= 0)
+        {
+            ++blick_progress;
+
+            SDL_SetRenderDrawColor(renderer,0,0,0,255);
+
+            if (blick_progress < 10)
+            {
+                SDL_Rect r = {0,0,window[0],blick_progress*window[1]/10};
+                SDL_RenderFillRect(renderer,&r);
+
+                r.y = window[1]-r.h;
+                SDL_RenderFillRect(renderer,&r);
+            }
+            else if (blick_progress < 40)
+            {
+                SDL_RenderClear(renderer);
+            }
+            else if (blick_progress < 50)
+            {
+                SDL_Rect r = {0,0,window[0],(50-blick_progress)*window[1]/10};
+                SDL_RenderFillRect(renderer,&r);
+
+                r.y = window[1]-r.h;
+                SDL_RenderFillRect(renderer,&r);
+            }
+            else blick_progress = -1;
+        }
+        else if (!random(0,drunkenness::blick_frequency))
+        {
+            ++blick_progress;
         }
 
         SDL_RenderPresent(renderer);
