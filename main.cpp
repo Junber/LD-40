@@ -63,8 +63,12 @@ public:
     }
 };
 
-void visual_novel(SDL_Texture* tex, std::string text)
+bool visual_novel(SDL_Texture* tex, std::string text, std::string text2="")
 {
+    bool choice = !text2.empty(), decision;
+
+    int move_out = 0;
+
     SDL_Event e;
 	while (!breakk)
     {
@@ -75,6 +79,17 @@ void visual_novel(SDL_Texture* tex, std::string text)
 			else if (e.type == SDL_KEYDOWN)
 			{
 			    if (e.key.keysym.sym == SDLK_ESCAPE) breakk = true;
+			    else if (e.key.keysym.sym == SDLK_e && !choice) return 0;
+			    else if (e.key.keysym.sym == SDLK_a && choice)
+                {
+                    decision = 0;
+                    move_out = 1;
+                }
+			    else if (e.key.keysym.sym == SDLK_d && choice)
+                {
+                    decision = 1;
+                    move_out = 1;
+                }
 			}
         }
 
@@ -82,11 +97,22 @@ void visual_novel(SDL_Texture* tex, std::string text)
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer,tex,nullptr,nullptr);
 
-        render_text(10,100,add_newlines(text,300),100);
+        if (choice)
+        {
+            if (move_out>0) move_out++;
+
+            render_text(10 ,100+(decision?move_out:0),add_newlines(text ,145),100,std::max(0,255-7*(decision?move_out:0)));
+            render_text(155,100+(decision?0:move_out),add_newlines(text2,145),100,std::max(0,255-7*(decision?0:move_out)));
+
+            if (100+move_out > window[1]) return decision;
+        }
+        else render_text(10,100,add_newlines(text,300),100);
 
         SDL_RenderPresent(renderer);
         limit_fps();
     }
+
+    return 0;
 }
 
 bool sort_criteria(Object* a, Object* b)
@@ -118,6 +144,7 @@ int main(int argc, char* args[])
 			{
 			    if (e.key.keysym.sym == SDLK_ESCAPE) breakk = true;
 			    if (e.key.keysym.sym == SDLK_e) visual_novel(load_image("Player"),"Hello. This text is a test. Testing. Testing! TESING!! Hopefully this works.");
+			    if (e.key.keysym.sym == SDLK_q) visual_novel(load_image("Player"),"Choice 1","And the far superior choice 2");
 			}
         }
 

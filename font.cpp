@@ -43,13 +43,14 @@ std::string add_newlines(std::string s, int width)
     return ret;
 }
 
-void render_text(int posx, int posy, std::string s, Uint8 brightness)
+void render_text(int posx, int posy, std::string s, Uint8 brightness, Uint8 alpha)
 {
     int offset = 0;
     std::deque<std::string> splitt = split(s,'\n');
     for (auto st: splitt)
     {
         SDL_Texture* tex =text_to_texture(st, brightness);
+        SDL_SetTextureAlphaMod(tex,alpha);
         int size[2];
         SDL_QueryTexture(tex, nullptr, nullptr, &size[0], &size[1]);
         SDL_Rect r = {posx, posy+offset, size[0], size[1]};
