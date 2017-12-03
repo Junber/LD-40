@@ -5,24 +5,6 @@
 #include <iostream>
 #include <fstream>
 
-animation load_animation(std::string s)
-{
-    animation a;
-    a.first = load_image(s);
-
-    std::fstream file;
-    file.open(std::string("Data")+PATH_SEPARATOR+"Timing"+PATH_SEPARATOR+s+".txt");
-    std::string line;
-    while (!file.eof())
-    {
-        std::getline(file,line);
-        auto sp = split(line,'x');
-        for (int i=0; i<std::atoi(sp[1].c_str()); ++i) a.second.push_back(std::atoi(sp[0].c_str()));
-    }
-
-    return a;
-}
-
 std::deque<Object*> objects;
 
 int camera[2] = {0,0};
@@ -34,17 +16,15 @@ Object::Object(int x, int y, std::string s, bool load_as_animation)
 
     rotation = 0;
 
-    if (load_as_animation) anim = load_animation(s);
+    if (load_as_animation) load_animation(s);
     else
     {
         anim.first = load_image(s);
         anim.second.push_back(-1);
         cur_anim_frame = cur_anim_time = 0;
+
+        SDL_QueryTexture(anim.first, nullptr, nullptr, &size[0], &size[1]);
     }
-
-    SDL_QueryTexture(anim.first, nullptr, nullptr, &size[0], &size[1]);
-
-    size[1] /= anim.second.size();
 
     hitbox_size[0] = size[0];
     hitbox_size[1] = size[1];
@@ -61,6 +41,26 @@ Object::Object(int x, int y, std::string s, bool load_as_animation)
 Object::~Object()
 {
     remove_it(&objects, this);
+}
+
+void Object::load_animation(std::string s)
+{
+    anim.first = load_image(s);
+    anim.second.clear();
+
+    std::fstream file;
+    file.open(std::string("Data")+PATH_SEPARATOR+"Timing"+PATH_SEPARATOR+s+".txt");
+    std::string line;
+    while (!file.eof())
+    {
+        std::getline(file,line);
+        auto sp = split(line,'x');
+        for (int i=0; i<std::atoi(sp[1].c_str()); ++i) anim.second.push_back(std::atoi(sp[0].c_str()));
+    }
+
+    SDL_QueryTexture(anim.first, nullptr, nullptr, &size[0], &size[1]);
+
+    size[1] /= anim.second.size();
 }
 
 void Object::update(bool increase_anim_time)
