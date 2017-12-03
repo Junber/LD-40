@@ -2,6 +2,7 @@
 #include "rendering.h"
 #include "player.h"
 #include "base.h"
+#include "hitbox.h"
 
 #include <iostream>
 
@@ -23,7 +24,7 @@ Background::~Background()
     remove_it(&backgrounds, this);
 }
 
-int walls_end_at=-window[0], sidewalks_end_at=-window[0], streets_end_at=-window[0];
+int walls_end_at=-window[0], sidewalks_end_at=-window[0], streets_end_at=-window[0], sidewalks_since_lantern=0;
 
 bool add_new_backgrounds()
 {
@@ -43,6 +44,20 @@ bool add_new_backgrounds()
     {
         auto b = new Background(sidewalks_end_at,90,"sidewalk",true);
         if (!random(0,5)) b->cur_anim_frame=1;
+
+        sidewalks_since_lantern++;
+        if (sidewalks_since_lantern >= 3)
+        {
+            Hitbox* h = new Hitbox(sidewalks_end_at,0,"lantern",true);
+
+            h->hitbox_size[0] = 11;
+            h->hitbox_size[1] = 8;
+            h->hitbox_offset[0] = 32;
+            h->hitbox_offset[1] = 58;
+            h->gen_corners();
+
+            sidewalks_since_lantern = 0;
+        }
 
         sidewalks_end_at += b->size[0];
 

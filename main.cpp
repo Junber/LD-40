@@ -28,41 +28,6 @@ void limit_fps()
     last_time = SDL_GetTicks();
 }
 
-int sign(int x)
-{
-    return (x>0?1:(x?-1:0));
-}
-
-class Hitbox: public Object
-{
-public:
-    Hitbox(int x, int y, int sx, int sy): Object(x,y,"")
-    {
-        hitbox_size[0] = size[0] = sx;
-        hitbox_size[1] = size[1] = sy;
-        gen_corners();
-    }
-
-    Hitbox(int x, int y, std::string s, bool load_as_animation = false): Object(x,y,s,load_as_animation){}
-
-    void update(bool increase_anim_time=true)
-    {
-        if (collides(player))
-        {
-            if (player->pos[0] == pos[0] && player->pos[1] == pos[1]) ++player->pos[0];
-
-            int dir = abs(player->pos[0]+player->hitbox_offset[0]-pos[0]-hitbox_offset[0]) <
-                      abs(player->pos[1]+player->hitbox_offset[1]-pos[1]-hitbox_offset[1]);
-
-            do
-            {
-                player->pos[dir] += sign(player->pos[dir]+player->hitbox_offset[dir]-pos[dir]-hitbox_offset[dir]);
-                player->gen_corners();
-            } while (collides(player));
-        }
-    }
-};
-
 class Entrance;
 std::deque<Entrance*> entraces;
 class Entrance: public Object
