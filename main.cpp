@@ -128,8 +128,8 @@ bool visual_novel(SDL_Texture* tex, std::string text, std::string text2="")
         {
             if (move_out>0) move_out++;
 
-            render_text(10 +(decision?0:move_out),100+(decision?move_out:0),add_newlines(text ,145),100,std::max(0,255-7*(decision?move_out:0)));
-            render_text(155-(decision?move_out:0),100+(decision?0:move_out),add_newlines(text2,145),100,std::max(0,255-7*(decision?0:move_out)));
+            render_text(10 +(decision?0:move_out)/2,100+(decision?move_out:0),add_newlines(text ,145),100,std::max(0,255-7*(decision?move_out:0)));
+            render_text(155-(decision?move_out:0)/2,100+(decision?0:move_out),add_newlines(text2,145),100,std::max(0,255-7*(decision?0:move_out)));
 
             if (move_out >= 100) return decision;
         }
@@ -178,8 +178,25 @@ void dialog(std::string file_name, SDL_Texture* tex)
     player->drunk_level += selected_drink->alcohol;
 }
 
+bool sway_at_next_opportunity=false;
 void update()
 {
+    if (drunkenness::speed_randomness && !random(0,30))
+    {
+        drunkenness::movement_speed = drunkenness::base_movement_speed+random(-1,1);
+        std::cout << drunkenness::movement_speed;
+    }
+
+    if (sway_at_next_opportunity || (drunkenness::swaying && player->is_in_control() &&!random(0,drunkenness::swaying)))
+    {
+        if (player->cur_anim_frame==2)
+        {
+            player->change_movement(sway);
+            sway_at_next_opportunity = false;
+        }
+        else sway_at_next_opportunity = true;
+    }
+
     player->update();
     for (Object* o: objects)
     {
@@ -238,18 +255,17 @@ int main(int argc, char* args[])
                         if (ent->collides(player)) ent->enter();
                     }
                 }
-			    else if (e.key.keysym.sym == SDLK_r) visual_novel(load_image("Player"),"Hello. This text is a test. Testing. Testing! TESING!! Hopefully this works.");
-			    else if (e.key.keysym.sym == SDLK_q) dialog("test",load_image("Player"));
+			    else if (e.key.keysym.sym == SDLK_r) player->change_movement(sway);
+			    else if (e.key.keysym.sym == SDLK_q) dialog("test",load_image("bar"));
 			    else if (e.key.keysym.sym == SDLK_f) player->change_movement(stumble);
 			}
         }
 
-        SDL_SetRenderDrawColor(renderer,255,255,255,drunkenness::blur);
-        SDL_RenderFillRect(renderer,nullptr);
-
         update();
         add_new_backgrounds();
         render();
+
+        //std::cout << camera[0];
 
         SDL_RenderPresent(renderer);
         limit_fps();

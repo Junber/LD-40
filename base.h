@@ -12,7 +12,9 @@
 
 namespace drunkenness
 {
-    extern int blick_frequency, blur;
+    extern int blick_frequency, blur, swaying;
+    extern bool speed_randomness;
+    extern int base_movement_speed, movement_speed; //for negative numbers: -x = 1/x
 }
 
 int random(int x, int y);

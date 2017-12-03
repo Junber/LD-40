@@ -29,7 +29,7 @@ void render_init()
     SDL_GetDesktopDisplayMode(0, &current);
 
     renderwindow = SDL_CreateWindow("LD 40", 50, 50, fullscreen?current.w:window[0]*zoom, fullscreen?current.h:window[1]*zoom, SDL_WINDOW_SHOWN | (fullscreen&SDL_WINDOW_FULLSCREEN));
-    renderer = SDL_CreateRenderer(renderwindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    renderer = SDL_CreateRenderer(renderwindow, -1, SDL_RENDERER_ACCELERATED);
 
     SDL_RenderSetLogicalSize(renderer, window[0], window[1]);
 }
@@ -93,7 +93,6 @@ void render()
     std::stable_sort(objects.begin(), objects.end(), sort_criteria);
     for (Object* o: objects)
     {
-        SDL_SetTextureAlphaMod(o->anim->first,drunkenness::blur);
         o->render();
     }
 

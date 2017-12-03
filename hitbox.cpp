@@ -33,6 +33,8 @@ void Hitbox::update(bool increase_anim_time)
     {
         if (player->pos[0] == pos[0] && player->pos[1] == pos[1]) ++player->pos[0];
 
+        player->change_movement(stumble);
+
         int dir = abs(player->pos[0]+player->hitbox_offset[0]-pos[0]-hitbox_offset[0]) <
                   abs(player->pos[1]+player->hitbox_offset[1]-pos[1]-hitbox_offset[1]);
 

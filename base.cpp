@@ -4,7 +4,9 @@
 
 namespace drunkenness
 {
-    int blick_frequency = 6000000, blur = 255;
+    int blick_frequency = 6000000, blur = 255, cur_speed_difference=0, swaying=0;
+    bool speed_randomness=false;
+    int base_movement_speed=2, movement_speed = base_movement_speed; //for negative numbers: -x = 1/x
 }
 
 std::default_random_engine generator;

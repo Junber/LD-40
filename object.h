@@ -9,6 +9,7 @@
 typedef std::pair<SDL_Texture*, std::deque<int> > animation;
 
 extern int camera[2];
+extern int camera_x_offset;
 
 template<class t> void remove_it(std::deque<t>* base, t thing)
 {

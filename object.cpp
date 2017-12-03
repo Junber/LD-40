@@ -9,6 +9,7 @@
 std::deque<Object*> objects;
 
 int camera[2] = {0,0};
+int camera_x_offset = 0;
 
 Object::Object(int x, int y, std::string s, bool load_as_animation)
 {
@@ -92,8 +93,10 @@ void Object::update(bool increase_anim_time)
 
 void Object::render()
 {
-    SDL_Rect dest={pos[0]-size[0]/2-camera[0], pos[1]-size[1]/2-camera[1], size[0], size[1]},
+    SDL_Rect dest={pos[0]-size[0]/2-camera[0]+camera_x_offset, pos[1]-size[1]/2-camera[1], size[0], size[1]},
                 src = {0, size[1]*cur_anim_frame, size[0], size[1]};
+
+    SDL_SetTextureAlphaMod(anim->first,drunkenness::blur);
 
     SDL_RenderCopyEx(renderer, anim->first, &src, &dest, rotation, nullptr, flipped?SDL_FLIP_HORIZONTAL:SDL_FLIP_NONE);
 }
