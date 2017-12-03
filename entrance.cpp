@@ -14,6 +14,7 @@ Entrance::Entrance(int x, int y, int sx, int sy): Object(x,y,"empty")
 
 void Entrance::enter()
 {
+    player->save_pos();
     dialog("test", load_image("bar"));
     delete this;
 }

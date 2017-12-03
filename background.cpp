@@ -67,7 +67,7 @@ bool add_new_backgrounds()
         }
 
         sidewalks_since_lantern++;
-        if (sidewalks_since_lantern >= 3)
+        if (sidewalks_since_lantern >= 5)
         {
             Hitbox* h = new Hitbox(sidewalks_end_at,0,"lantern",true);
 

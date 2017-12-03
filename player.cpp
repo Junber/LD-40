@@ -15,8 +15,7 @@ Player::Player(): Object(0,window[1]/2,"walk1",true)
     hitbox_size[1] = 3;
     hitbox_offset[1] = 18;
 
-    saved_pos[0] = pos[0];
-    saved_pos[1] = pos[1];
+    save_pos();
 
     gen_corners();
 
@@ -153,6 +152,12 @@ void Player::change_movement(player_movement m)
     }
 
     if (cur_movement != walking_up) cur_anim_frame = cur_anim_time = 0;
+}
+
+void Player::save_pos()
+{
+    saved_pos[0] = pos[0];
+    saved_pos[1] = pos[1];
 }
 
 void Player::kill()
