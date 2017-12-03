@@ -17,6 +17,7 @@ template<class t> void remove_it(std::deque<t>* base, t thing)
 
 class Object
 {
+protected:
     int corners[4][2], proj_min, proj_max;
 public:
     int pos[2], size[2], rotation, hitbox_size[2], hitbox_offset[2];

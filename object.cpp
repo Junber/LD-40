@@ -64,6 +64,7 @@ void Object::load_animation(std::string s)
             for (int i=0; i<std::atoi(sp[1].c_str()); ++i) anim->second.push_back(std::atoi(sp[0].c_str()));
         }
 
+        file.close();
         loaded_animations[s] = anim;
     }
 
@@ -80,7 +81,7 @@ void Object::update(bool increase_anim_time)
     {
         if (increase_anim_time) ++cur_anim_time;
 
-        if (cur_anim_time > anim->second[cur_anim_frame])
+        if (cur_anim_time >= anim->second[cur_anim_frame])
         {
             ++cur_anim_frame;
             cur_anim_frame %= anim->second.size();

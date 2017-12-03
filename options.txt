@@ -3,3 +3,7 @@ fullscreen:0
 
 #zoom is only in effect if fullscreen is turned off
 zoom:3
+
+#changes the volume for sfx/music. can be set to something between 0 and 128
+sfx:64
+music:64

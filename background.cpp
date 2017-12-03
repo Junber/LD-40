@@ -50,10 +50,10 @@ bool add_new_backgrounds()
         {
             Hitbox* h = new Hitbox(sidewalks_end_at,0,"lantern",true);
 
-            h->hitbox_size[0] = 11;
+            h->hitbox_size[0] = 17;
             h->hitbox_size[1] = 8;
-            h->hitbox_offset[0] = 32;
-            h->hitbox_offset[1] = 58;
+            h->hitbox_offset[0] = 30;
+            h->hitbox_offset[1] = 60;
             h->gen_corners();
 
             sidewalks_since_lantern = 0;

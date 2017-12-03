@@ -5,6 +5,7 @@
 #include <string>
 #include <algorithm>
 #include <iostream>
+#include <fstream>
 
 #include "object.h"
 #include "rendering.h"
@@ -12,12 +13,44 @@
 #include "base.h"
 #include "player.h"
 #include "background.h"
+#include "sound.h"
 
 #ifndef _STATIC
 void *__gxx_personality_v0;
 #endif
 
 bool breakk = false;
+
+struct drink
+{
+    std::string name;
+    int alcohol;
+};
+
+std::deque<drink*> drinks;
+void load_drinks()
+{
+    std::fstream file;
+    file.open(std::string("Data")+PATH_SEPARATOR+"Dialog"+PATH_SEPARATOR+"DRINKS.txt");
+    std::string line;
+
+    while (!file.eof())
+    {
+        std::getline(file,line);
+        auto sp = split(line, ':');
+
+        drink* d = new drink();
+        d->name = sp[0];
+        d->alcohol = std::stoi(sp[1]);
+        drinks.push_back(d);
+    }
+    file.close();
+}
+
+drink* random_drink()
+{
+    return drinks[random(0,drinks.size()-1)];
+}
 
 int last_time;
 float wait;
@@ -109,47 +142,40 @@ bool visual_novel(SDL_Texture* tex, std::string text, std::string text2="")
     return 0;
 }
 
-bool sort_criteria(Object* a, Object* b)
+void dialog(std::string file_name, SDL_Texture* tex)
 {
-    return a->pos[1]+a->hitbox_offset[1] < b->pos[1]+b->hitbox_offset[1];
-}
+    bool player_talking = true;
+    drink* selected_drink = nullptr;
 
-int blick_progress = -1;
+    std::fstream file;
+    file.open(std::string("Data")+PATH_SEPARATOR+"Dialog"+PATH_SEPARATOR+file_name+".txt");
+    std::string line;
 
-void blinking()
-{
-    if (blick_progress >= 0)
+    while (!file.eof())
     {
-        ++blick_progress;
-
-        SDL_SetRenderDrawColor(renderer,0,0,0,255);
-
-        if (blick_progress < 10)
+        std::getline(file,line);
+        if (line.substr(0,2) == "P:") player_talking = true;
+        else if (line.substr(0,2) == "B:") player_talking = false;
+        else if (line.find('#') != std::string::npos)
         {
-            SDL_Rect r = {0,0,window[0],blick_progress*window[1]/10};
-            SDL_RenderFillRect(renderer,&r);
+            if (!selected_drink)
+            {
+                drink *drink1 = random_drink(), *drink2 = random_drink();
+                selected_drink = visual_novel(tex,drink1->name, drink2->name) ? drink2 : drink1;
+            }
 
-            r.y = window[1]-r.h;
-            SDL_RenderFillRect(renderer,&r);
-        }
-        else if (blick_progress < 40)
-        {
-            SDL_RenderClear(renderer);
-        }
-        else if (blick_progress < 50)
-        {
-            SDL_Rect r = {0,0,window[0],(50-blick_progress)*window[1]/10};
-            SDL_RenderFillRect(renderer,&r);
+            auto sp = split(line, '#');
 
-            r.y = window[1]-r.h;
-            SDL_RenderFillRect(renderer,&r);
+            visual_novel(tex,sp[0]+selected_drink->name+sp[1]);
         }
-        else blick_progress = -1;
+        else
+        {
+            visual_novel(tex,line);
+        }
     }
-    else if (!random(0,drunkenness::blick_frequency))
-    {
-        ++blick_progress;
-    }
+    file.close();
+
+    player->drunk_level += selected_drink->alcohol;
 }
 
 void update()
@@ -159,31 +185,36 @@ void update()
     {
         if (o != player) o->update();
     }
-
-    blinking();
 }
 
-void render()
+void load_options()
 {
-    for (Background* o: backgrounds)
+    std::fstream file;
+    file.open("options.txt");
+    std::string line;
+    while (!file.eof())
     {
-        o->render();
-    }
-    std::stable_sort(objects.begin(), objects.end(), sort_criteria);
-    for (Object* o: objects)
-    {
-        SDL_SetTextureAlphaMod(o->anim->first,drunkenness::blur);
-        o->render();
-    }
+        std::getline(file, line);
+        if (!line.empty() && line[0] != '#')
+        {
+            auto sp = split(line,':');
 
-    blinking();
+            load_option_rendering(sp[0],sp[1]);
+            load_option_sound(sp[0],sp[1]);
+        }
+    }
+    file.close();
 }
 
 int main(int argc, char* args[])
 {
+    load_options();
+    load_drinks();
+
     random_init();
     render_init();
     font_init();
+    sound_init();
 
     player = new Player();
 
@@ -208,7 +239,8 @@ int main(int argc, char* args[])
                     }
                 }
 			    else if (e.key.keysym.sym == SDLK_r) visual_novel(load_image("Player"),"Hello. This text is a test. Testing. Testing! TESING!! Hopefully this works.");
-			    else if (e.key.keysym.sym == SDLK_q) visual_novel(load_image("Player"),"Choice 1","And the far superior choice 2");
+			    else if (e.key.keysym.sym == SDLK_q) dialog("test",load_image("Player"));
+			    else if (e.key.keysym.sym == SDLK_f) player->change_movement(stumble);
 			}
         }
 

@@ -1,6 +1,8 @@
 #include "hitbox.h"
 #include "player.h"
 
+#include <iostream>
+
 int sign(int x)
 {
     return (x>0?1:(x?-1:0));
@@ -39,5 +41,7 @@ void Hitbox::update(bool increase_anim_time)
             player->pos[dir] += sign(player->pos[dir]+player->hitbox_offset[dir]-pos[dir]-hitbox_offset[dir]);
             player->gen_corners();
         } while (collides(player));
+
+        //std::cout << hitbox_size[0] << " " << corners[0][0] << " " << corners[3][0] << " " << player->pos[0]-player->hitbox_size[0]/2 << "\n";
     }
 }

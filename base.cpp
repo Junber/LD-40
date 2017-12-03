@@ -2,10 +2,9 @@
 #include <random>
 #include <time.h>
 
-
 namespace drunkenness
 {
-    int blick_frequency = 600, blur = 255;
+    int blick_frequency = 6000000, blur = 255;
 }
 
 std::default_random_engine generator;

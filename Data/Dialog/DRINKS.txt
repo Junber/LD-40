@@ -1,0 +1,2 @@
+beer:5
+vodka:7

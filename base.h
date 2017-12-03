@@ -4,6 +4,12 @@
 #include <deque>
 #include <string>
 
+#if defined(WIN32) || defined(_WIN32)
+#define PATH_SEPARATOR "\\"
+#else
+#define PATH_SEPARATOR "/"
+#endif
+
 namespace drunkenness
 {
     extern int blick_frequency, blur;
