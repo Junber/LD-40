@@ -40,12 +40,12 @@ void Player::update(bool increase_anim_time)
             if (cur_movement == auto_runner)
             {
                 pos[0] += (drunkenness::movement_speed>0?drunkenness::movement_speed:1);
-                if (state[SDL_SCANCODE_D])
+                if (state[SDL_SCANCODE_D] && camera_x_offset <  window[0]/2-size[0])
                 {
                     camera_x_offset++;
                     pos[0]++;
                 }
-                else if (state[SDL_SCANCODE_A])
+                else if (state[SDL_SCANCODE_A] && camera_x_offset > -window[0]/2+size[0])
                 {
                     camera_x_offset--;
                     pos[0]--;
@@ -164,4 +164,5 @@ void Player::kill()
 {
     pos[0] = saved_pos[0];
     pos[1] = saved_pos[1];
+    camera_x_offset = 0;
 }

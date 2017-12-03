@@ -38,9 +38,14 @@ drink* random_drink()
     return drinks[random(0,drinks.size()-1)];
 }
 
-bool visual_novel(SDL_Texture* tex, std::string text, std::string text2="")
+bool visual_novel(SDL_Texture* tex, std::string text, std::string text2, bool player)
 {
     bool choice = !text2.empty(), decision;
+    SDL_Texture *top = load_image("top_"+std::string(player?"play":"bar")), *bottom = load_image("bottom_"+std::string(player?"play":"bar")),
+        *middle = load_image("middle");
+
+    int height = add_newlines(text ,choice?60:130);
+    if (choice) add_newlines(text2,60);
 
     int move_out = 0;
 
@@ -72,16 +77,25 @@ bool visual_novel(SDL_Texture* tex, std::string text, std::string text2="")
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer,tex,nullptr,nullptr);
 
+        SDL_Rect r = {26,20,180,20};
+        SDL_RenderCopy(renderer,top,nullptr,&r);
+        while (r.y <= height-16)
+        {
+            r.y += 20;
+            SDL_RenderCopy(renderer,middle,nullptr,&r);
+        }
+        r.y += 20;
+        SDL_RenderCopy(renderer,bottom,nullptr,&r);
+
+        render_text(51 +(decision?0:move_out)/2,25+(decision?move_out:0),text ,0,std::max(0,255-7*(decision?move_out:0)));
         if (choice)
         {
             if (move_out>0) move_out++;
 
-            render_text(10 +(decision?0:move_out)/2,100+(decision?move_out:0),add_newlines(text ,145),0,std::max(0,255-7*(decision?move_out:0)));
-            render_text(155-(decision?move_out:0)/2,100+(decision?0:move_out),add_newlines(text2,145),0,std::max(0,255-7*(decision?0:move_out)));
+            render_text(181-(decision?move_out:0)/2,25+(decision?0:move_out),text2,0,std::max(0,255-7*(decision?0:move_out)), true);
 
             if (move_out >= 100) return decision;
         }
-        else render_text(10,100,add_newlines(text,300),0);
 
         SDL_RenderPresent(renderer);
         limit_fps();
@@ -109,16 +123,16 @@ void dialog(std::string file_name, SDL_Texture* tex)
             if (!selected_drink)
             {
                 drink *drink1 = random_drink(), *drink2 = random_drink();
-                selected_drink = visual_novel(tex,drink1->name, drink2->name) ? drink2 : drink1;
+                selected_drink = visual_novel(tex,drink1->name, drink2->name, player_talking) ? drink2 : drink1;
             }
 
             auto sp = split(line, '#');
 
-            visual_novel(tex,sp[0]+selected_drink->name+sp[1]);
+            visual_novel(tex,sp[0]+selected_drink->name+sp[1],"",player_talking);
         }
         else
         {
-            visual_novel(tex,line);
+            visual_novel(tex,line,"",player_talking);
         }
     }
     file.close();

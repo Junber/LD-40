@@ -21,11 +21,11 @@ SDL_Texture* text_to_texture(std::string s, Uint8 brightness)
     return loaded_texts[p];
 }
 
-std::string add_newlines(std::string s, int width)
+int add_newlines(std::string &s, int width)
 {
     std::deque<std::string> splitt = split(s,' ');
     std::string ret = "", part="";
-    int cur_width;
+    int cur_width, height=0;
     for (std::string st: splitt)
     {
         TTF_SizeText(font,(part+" "+st).c_str(), &cur_width, nullptr);
@@ -34,16 +34,20 @@ std::string add_newlines(std::string s, int width)
             part += " "+st;
         else
         {
-            ret += "\n"+part;
+            ret += part+"\n";
             part = st;
+            ++height;
         }
     }
 
-    if (!part.empty()) ret += "\n"+part;
-    return ret;
+    ret += part;
+    ++height;
+
+    s = ret;
+    return height*TTF_FontLineSkip(font);
 }
 
-void render_text(int posx, int posy, std::string s, Uint8 brightness, Uint8 alpha)
+void render_text(int posx, int posy, std::string s, Uint8 brightness, Uint8 alpha, bool r_aligned)
 {
     int offset = 0;
     std::deque<std::string> splitt = split(s,'\n');
@@ -53,7 +57,7 @@ void render_text(int posx, int posy, std::string s, Uint8 brightness, Uint8 alph
         SDL_SetTextureAlphaMod(tex,alpha);
         int size[2];
         SDL_QueryTexture(tex, nullptr, nullptr, &size[0], &size[1]);
-        SDL_Rect r = {posx, posy+offset, size[0], size[1]};
+        SDL_Rect r = {posx-r_aligned*size[0], posy+offset, size[0], size[1]};
         SDL_RenderCopy(renderer, tex, nullptr, &r);
 
         offset += TTF_FontLineSkip(font);
