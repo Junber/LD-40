@@ -36,7 +36,7 @@ bool add_new_backgrounds()
         auto b = new Background(walls_end_at,0,"wall",true);
 
         walls_since_bar++;
-        if (walls_since_bar > 40-player->drunk_level*5)
+        if (walls_since_bar > 25-player->drunk_level*5)
         {
             b->cur_anim_frame=2;
             new Entrance(walls_end_at+65,0,30,b->size[1]+80);
