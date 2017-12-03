@@ -15,7 +15,7 @@ Player::Player(): Object(0,window[1]/2,"walk1",true)
 
 void Player::update_camera()
 {
-    camera[0] = pos[0]-window[0]/2;
+    camera[0] = std::max(-300,pos[0]-window[0]/2);
 }
 
 void Player::update(bool increase_anim_time)
@@ -35,7 +35,9 @@ void Player::update(bool increase_anim_time)
         gen_corners();
         cur_anim_time++;
 
+        if (pos[0] < -292) pos[0] = -292;
         if (pos[1] < 70) pos[1] = 70;
+        else if (pos[1] > 156) pos[1] = 156;
 
         update_camera();
     }
