@@ -9,11 +9,14 @@ Player* player;
 Player::Player(): Object(0,window[1]/2,"walk1",true)
 {
     drunk_level = 4;
-    change_movement(auto_runner);//in_control);
+    change_movement(drunkenness::auto_running?auto_runner:in_control);
 
     hitbox_size[0] = 9;
     hitbox_size[1] = 3;
     hitbox_offset[1] = 18;
+
+    saved_pos[0] = pos[0];
+    saved_pos[1] = pos[1];
 
     gen_corners();
 
@@ -87,7 +90,7 @@ void Player::update(bool increase_anim_time)
         {
             if (cur_anim_frame >= anim->second.size()-1)
             {
-                change_movement(in_control);
+                change_movement(drunkenness::auto_running?auto_runner:in_control);
                 pos[0] += 5*(flipped?-1:1);
                 pos[1]--;
                 update_camera();
@@ -106,7 +109,7 @@ void Player::update(bool increase_anim_time)
         {
             if (cur_anim_frame >= anim->second.size()-1)
             {
-                change_movement(in_control);
+                change_movement(drunkenness::auto_running?auto_runner:in_control);
                 player->cur_anim_frame=2;
 
                 if (drunk_level==4) pos[0] -= 4;
@@ -117,6 +120,12 @@ void Player::update(bool increase_anim_time)
 
             gen_corners();
         }
+    }
+    else if (cur_movement == walking_up)
+    {
+        cur_anim_time++;
+        pos[1] -= drunkenness::movement_speed;
+        gen_corners();
     }
 
     Object::update(false);
@@ -143,5 +152,11 @@ void Player::change_movement(player_movement m)
         pos[0] += 5*(flipped?-1:1);
     }
 
-    cur_anim_frame = cur_anim_time = 0;
+    if (cur_movement != walking_up) cur_anim_frame = cur_anim_time = 0;
+}
+
+void Player::kill()
+{
+    pos[0] = saved_pos[0];
+    pos[1] = saved_pos[1];
 }

@@ -1,13 +1,25 @@
 #include "base.h"
 #include <random>
 #include <time.h>
+#include <SDL.h>
+
+int last_time;
+float wait;
+void limit_fps()
+{
+    wait = (100.0/6)-(SDL_GetTicks() - last_time);
+    if (wait>0) SDL_Delay(wait);
+    last_time = SDL_GetTicks();
+}
 
 namespace drunkenness
 {
     int blick_frequency = 6000000, blur = 255, cur_speed_difference=0, swaying=0;
-    bool speed_randomness=false;
+    bool speed_randomness=false, auto_running=true;
     int base_movement_speed=2, movement_speed = base_movement_speed; //for negative numbers: -x = 1/x
 }
+
+bool breakk = false;
 
 std::default_random_engine generator;
 int random(int x, int y)

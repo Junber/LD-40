@@ -1,5 +1,6 @@
 #include "hitbox.h"
 #include "player.h"
+#include "base.h"
 
 #include <iostream>
 
@@ -31,18 +32,20 @@ void Hitbox::update(bool increase_anim_time)
 {
     if (collides(player))
     {
-        if (player->pos[0] == pos[0] && player->pos[1] == pos[1]) ++player->pos[0];
-
-        player->change_movement(stumble);
-
-        int dir = abs(player->pos[0]+player->hitbox_offset[0]-pos[0]-hitbox_offset[0]) <
-                  abs(player->pos[1]+player->hitbox_offset[1]-pos[1]-hitbox_offset[1]);
-
-        do
+        if (drunkenness::auto_running) player->kill();
+        else
         {
-            player->pos[dir] += sign(player->pos[dir]+player->hitbox_offset[dir]-pos[dir]-hitbox_offset[dir]);
-            player->gen_corners();
-        } while (collides(player));
+            if (player->pos[0] == pos[0] && player->pos[1] == pos[1]) ++player->pos[0];
+
+            int dir = abs(player->pos[0]+player->hitbox_offset[0]-pos[0]-hitbox_offset[0]) <
+                      abs(player->pos[1]+player->hitbox_offset[1]-pos[1]-hitbox_offset[1]);
+
+            do
+            {
+                player->pos[dir] += sign(player->pos[dir]+player->hitbox_offset[dir]-pos[dir]-hitbox_offset[dir]);
+                player->gen_corners();
+            } while (collides(player));
+        }
 
         //std::cout << hitbox_size[0] << " " << corners[0][0] << " " << corners[3][0] << " " << player->pos[0]-player->hitbox_size[0]/2 << "\n";
     }

@@ -21,6 +21,8 @@ Object::Object(int x, int y, std::string s, bool load_as_animation)
     if (load_as_animation) load_animation(s);
     else
     {
+        anim = new animation();
+
         anim->first = load_image(s);
         anim->second.push_back(-1);
         cur_anim_frame = cur_anim_time = 0;

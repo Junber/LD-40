@@ -10,12 +10,16 @@
 #define PATH_SEPARATOR "/"
 #endif
 
+void limit_fps();
+
 namespace drunkenness
 {
     extern int blick_frequency, blur, swaying;
-    extern bool speed_randomness;
+    extern bool speed_randomness,auto_running;
     extern int base_movement_speed, movement_speed; //for negative numbers: -x = 1/x
 }
+
+extern bool breakk;
 
 int random(int x, int y);
 void random_init();
