@@ -38,8 +38,8 @@ class Hitbox: public Object
 public:
     Hitbox(int x, int y, int sx, int sy): Object(x,y,"")
     {
-        size[0] = sx;
-        size[1] = sy;
+        hitbox_size[0] = size[0] = sx;
+        hitbox_size[1] = size[1] = sy;
         gen_corners();
     }
 
@@ -63,6 +63,34 @@ public:
     }
 };
 
+class Entrance;
+std::deque<Entrance*> entraces;
+class Entrance: public Object
+{
+public:
+    Entrance(int x, int y, int sx, int sy): Object(x,y,"")
+    {
+        hitbox_size[0] = size[0] = sx;
+        hitbox_size[1] = size[1] = sy;
+        gen_corners();
+
+        remove_it(&objects, (Object*) this);
+        entraces.push_back(this);
+    }
+
+    ~Entrance() override
+    {
+        remove_it(&entraces, this);
+    }
+
+    void enter()
+    {
+        //visual_novel()
+    }
+
+    void update(bool increase_anim_time=true) override {}
+    void render() override {}
+};
 bool visual_novel(SDL_Texture* tex, std::string text, std::string text2="")
 {
     bool choice = !text2.empty(), decision;
@@ -143,8 +171,15 @@ int main(int argc, char* args[])
 			else if (e.type == SDL_KEYDOWN)
 			{
 			    if (e.key.keysym.sym == SDLK_ESCAPE) breakk = true;
-			    if (e.key.keysym.sym == SDLK_e) visual_novel(load_image("Player"),"Hello. This text is a test. Testing. Testing! TESING!! Hopefully this works.");
-			    if (e.key.keysym.sym == SDLK_q) visual_novel(load_image("Player"),"Choice 1","And the far superior choice 2");
+			    else if (e.key.keysym.sym == SDLK_e)
+                {
+                    for (Entrance* ent: entraces)
+                    {
+                        if (ent->collides(player)) ent->enter();
+                    }
+                }
+			    else if (e.key.keysym.sym == SDLK_r) visual_novel(load_image("Player"),"Hello. This text is a test. Testing. Testing! TESING!! Hopefully this works.");
+			    else if (e.key.keysym.sym == SDLK_q) visual_novel(load_image("Player"),"Choice 1","And the far superior choice 2");
 			}
         }
 

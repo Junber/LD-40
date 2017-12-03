@@ -8,6 +8,8 @@
 
 typedef std::pair<SDL_Texture*, std::deque<int> > animation;
 
+animation load_animation(std::string s);
+
 extern int camera[2];
 
 template<class t> void remove_it(std::deque<t>* base, t thing)
@@ -25,7 +27,7 @@ public:
     animation anim;
     int cur_anim_frame, cur_anim_time;
 
-    Object(int x, int y, std::string s);
+    Object(int x, int y, std::string s, bool load_as_animation=false);
     virtual ~Object();
 
     virtual void update(bool increase_anim_time=true);

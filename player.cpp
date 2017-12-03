@@ -1,12 +1,8 @@
 #include "player.h"
 #include "rendering.h"
 
-Player::Player(): Object(0,0,"walk1")
+Player::Player(): Object(0,0,"walk1",true)
 {
-    anim.second[0] = 5;
-    for (int i=0; i<5; ++i) anim.second.push_back(5);
-    size[1] /= 6;
-
     hitbox_size[1] = 6;
     hitbox_offset[1] = 18;
 
