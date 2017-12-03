@@ -2,4 +2,4 @@
 fullscreen:0
 
 #zoom is only in effect if fullscreen is turned off
-zoom:2
+zoom:3

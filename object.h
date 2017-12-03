@@ -22,7 +22,7 @@ public:
     int pos[2], size[2], rotation, hitbox_size[2], hitbox_offset[2];
     bool flipped;
 
-    animation anim;
+    animation* anim;
     int cur_anim_frame, cur_anim_time;
 
     Object(int x, int y, std::string s, bool load_as_animation=false);

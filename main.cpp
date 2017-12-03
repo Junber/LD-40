@@ -11,13 +11,13 @@
 #include "font.h"
 #include "base.h"
 #include "player.h"
+#include "background.h"
 
 #ifndef _STATIC
 void *__gxx_personality_v0;
 #endif
 
 bool breakk = false;
-Player* player;
 
 int last_time;
 float wait;
@@ -43,7 +43,7 @@ public:
         gen_corners();
     }
 
-    Hitbox(int x, int y, std::string s): Object(x,y,s){}
+    Hitbox(int x, int y, std::string s, bool load_as_animation = false): Object(x,y,s,load_as_animation){}
 
     void update(bool increase_anim_time=true)
     {
@@ -91,6 +91,7 @@ public:
     void update(bool increase_anim_time=true) override {}
     void render() override {}
 };
+
 bool visual_novel(SDL_Texture* tex, std::string text, std::string text2="")
 {
     bool choice = !text2.empty(), decision;
@@ -148,17 +149,80 @@ bool sort_criteria(Object* a, Object* b)
     return a->pos[1]+a->hitbox_offset[1] < b->pos[1]+b->hitbox_offset[1];
 }
 
+int blick_progress = -1;
+
+void blinking()
+{
+    if (blick_progress >= 0)
+    {
+        ++blick_progress;
+
+        SDL_SetRenderDrawColor(renderer,0,0,0,255);
+
+        if (blick_progress < 10)
+        {
+            SDL_Rect r = {0,0,window[0],blick_progress*window[1]/10};
+            SDL_RenderFillRect(renderer,&r);
+
+            r.y = window[1]-r.h;
+            SDL_RenderFillRect(renderer,&r);
+        }
+        else if (blick_progress < 40)
+        {
+            SDL_RenderClear(renderer);
+        }
+        else if (blick_progress < 50)
+        {
+            SDL_Rect r = {0,0,window[0],(50-blick_progress)*window[1]/10};
+            SDL_RenderFillRect(renderer,&r);
+
+            r.y = window[1]-r.h;
+            SDL_RenderFillRect(renderer,&r);
+        }
+        else blick_progress = -1;
+    }
+    else if (!random(0,drunkenness::blick_frequency))
+    {
+        ++blick_progress;
+    }
+}
+
+void update()
+{
+    player->update();
+    for (Object* o: objects)
+    {
+        if (o != player) o->update();
+    }
+
+    blinking();
+}
+
+void render()
+{
+    for (Background* o: backgrounds)
+    {
+        o->render();
+    }
+    std::stable_sort(objects.begin(), objects.end(), sort_criteria);
+    for (Object* o: objects)
+    {
+        SDL_SetTextureAlphaMod(o->anim->first,drunkenness::blur);
+        o->render();
+    }
+
+    blinking();
+}
+
 int main(int argc, char* args[])
 {
-    int blick_progress = -1;
-
     random_init();
     render_init();
     font_init();
 
     player = new Player();
 
-    new Hitbox(100,100,"Player");
+    while (add_new_backgrounds()) {}
 
     SDL_SetRenderDrawBlendMode(renderer,SDL_BLENDMODE_BLEND);
     SDL_Event e;
@@ -186,51 +250,9 @@ int main(int argc, char* args[])
         SDL_SetRenderDrawColor(renderer,255,255,255,drunkenness::blur);
         SDL_RenderFillRect(renderer,nullptr);
 
-        player->update();
-        for (Object* o: objects)
-        {
-            if (o != player) o->update();
-        }
-
-        std::stable_sort(objects.begin(), objects.end(), sort_criteria);
-        for (Object* o: objects)
-        {
-            SDL_SetTextureAlphaMod(o->anim.first,drunkenness::blur);
-            o->render();
-        }
-
-        if (blick_progress >= 0)
-        {
-            ++blick_progress;
-
-            SDL_SetRenderDrawColor(renderer,0,0,0,255);
-
-            if (blick_progress < 10)
-            {
-                SDL_Rect r = {0,0,window[0],blick_progress*window[1]/10};
-                SDL_RenderFillRect(renderer,&r);
-
-                r.y = window[1]-r.h;
-                SDL_RenderFillRect(renderer,&r);
-            }
-            else if (blick_progress < 40)
-            {
-                SDL_RenderClear(renderer);
-            }
-            else if (blick_progress < 50)
-            {
-                SDL_Rect r = {0,0,window[0],(50-blick_progress)*window[1]/10};
-                SDL_RenderFillRect(renderer,&r);
-
-                r.y = window[1]-r.h;
-                SDL_RenderFillRect(renderer,&r);
-            }
-            else blick_progress = -1;
-        }
-        else if (!random(0,drunkenness::blick_frequency))
-        {
-            ++blick_progress;
-        }
+        update();
+        add_new_backgrounds();
+        render();
 
         SDL_RenderPresent(renderer);
         limit_fps();

@@ -1,7 +1,9 @@
 #include "player.h"
 #include "rendering.h"
 
-Player::Player(): Object(0,0,"walk1",true)
+Player* player;
+
+Player::Player(): Object(0,window[1]/2,"walk1",true)
 {
     hitbox_size[1] = 6;
     hitbox_offset[1] = 18;
@@ -14,7 +16,6 @@ Player::Player(): Object(0,0,"walk1",true)
 void Player::update_camera()
 {
     camera[0] = pos[0]-window[0]/2;
-    camera[1] = pos[1]-window[1]/2;
 }
 
 void Player::update(bool increase_anim_time)
@@ -33,6 +34,8 @@ void Player::update(bool increase_anim_time)
         //rotation = std::atan2(pos[1]-last_pos[1], pos[0]-last_pos[0])*180/M_PI;
         gen_corners();
         cur_anim_time++;
+
+        if (pos[1] < 70) pos[1] = 70;
 
         update_camera();
     }

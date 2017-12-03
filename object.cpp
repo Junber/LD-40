@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <map>
 
 std::deque<Object*> objects;
 
@@ -19,11 +20,11 @@ Object::Object(int x, int y, std::string s, bool load_as_animation)
     if (load_as_animation) load_animation(s);
     else
     {
-        anim.first = load_image(s);
-        anim.second.push_back(-1);
+        anim->first = load_image(s);
+        anim->second.push_back(-1);
         cur_anim_frame = cur_anim_time = 0;
 
-        SDL_QueryTexture(anim.first, nullptr, nullptr, &size[0], &size[1]);
+        SDL_QueryTexture(anim->first, nullptr, nullptr, &size[0], &size[1]);
     }
 
     hitbox_size[0] = size[0];
@@ -43,36 +44,46 @@ Object::~Object()
     remove_it(&objects, this);
 }
 
+std::map<std::string, animation*> loaded_animations;
 void Object::load_animation(std::string s)
 {
-    anim.first = load_image(s);
-    anim.second.clear();
-
-    std::fstream file;
-    file.open(std::string("Data")+PATH_SEPARATOR+"Timing"+PATH_SEPARATOR+s+".txt");
-    std::string line;
-    while (!file.eof())
+    if (loaded_animations.count(s)) anim = loaded_animations[s];
+    else
     {
-        std::getline(file,line);
-        auto sp = split(line,'x');
-        for (int i=0; i<std::atoi(sp[1].c_str()); ++i) anim.second.push_back(std::atoi(sp[0].c_str()));
+        anim = new animation();
+        anim->first = load_image(s);
+        anim->second = std::deque<int>();
+
+        std::fstream file;
+        file.open(std::string("Data")+PATH_SEPARATOR+"Timing"+PATH_SEPARATOR+s+".txt");
+        std::string line;
+        while (!file.eof())
+        {
+            std::getline(file,line);
+            auto sp = split(line,'x');
+            for (int i=0; i<std::atoi(sp[1].c_str()); ++i) anim->second.push_back(std::atoi(sp[0].c_str()));
+        }
+
+        loaded_animations[s] = anim;
     }
 
-    SDL_QueryTexture(anim.first, nullptr, nullptr, &size[0], &size[1]);
+    SDL_QueryTexture(anim->first, nullptr, nullptr, &size[0], &size[1]);
 
-    size[1] /= anim.second.size();
+    size[1] /= anim->second.size();
+
+    cur_anim_frame = cur_anim_time = 0;
 }
 
 void Object::update(bool increase_anim_time)
 {
-    if (anim.second[cur_anim_frame] > 0)
+    if (anim->second[cur_anim_frame] > 0)
     {
         if (increase_anim_time) ++cur_anim_time;
 
-        if (cur_anim_time > anim.second[cur_anim_frame])
+        if (cur_anim_time > anim->second[cur_anim_frame])
         {
             ++cur_anim_frame;
-            cur_anim_frame %= anim.second.size();
+            cur_anim_frame %= anim->second.size();
             cur_anim_time=0;
         }
     }
@@ -83,7 +94,7 @@ void Object::render()
     SDL_Rect dest={pos[0]-size[0]/2-camera[0], pos[1]-size[1]/2-camera[1], size[0], size[1]},
                 src = {0, size[1]*cur_anim_frame, size[0], size[1]};
 
-    SDL_RenderCopyEx(renderer, anim.first, &src, &dest, rotation, nullptr, flipped?SDL_FLIP_HORIZONTAL:SDL_FLIP_NONE);
+    SDL_RenderCopyEx(renderer, anim->first, &src, &dest, rotation, nullptr, flipped?SDL_FLIP_HORIZONTAL:SDL_FLIP_NONE);
 }
 
 void Object::gen_corners()

@@ -3,6 +3,8 @@
 
 #include "object.h"
 
+class Player;
+extern Player* player;
 class Player: public Object
 {
     const int movement_speed = 2;
