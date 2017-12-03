@@ -33,6 +33,7 @@ bool add_new_backgrounds()
     {
         auto b = new Background(walls_end_at,0,"wall",true);
         if (!random(0,20)) b->cur_anim_frame=1;
+        else if (!random(0,3)) new Background(walls_end_at+random(10,b->size[0]-50),random(10,b->size[1]-60),"poster",true);
 
         walls_end_at += b->size[0];
 
