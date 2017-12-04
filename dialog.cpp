@@ -40,7 +40,7 @@ drink* random_drink()
 
 bool visual_novel(SDL_Texture* tex, std::string text, std::string text2, bool player)
 {
-    bool choice = !text2.empty(), decision;
+    bool choice = !text2.empty(), decision=0;
     SDL_Texture *top = load_image("top_"+std::string(player?"play":"bar")), *bottom = load_image("bottom_"+std::string(player?"play":"bar")),
         *middle = load_image("middle");
 

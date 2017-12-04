@@ -3,8 +3,34 @@
 #include "base.h"
 
 #include <string>
+#include <iostream>
 
 Player* player;
+
+int w,a,s,d;
+void Player::assign_keys()
+{
+    if (drunkenness::random_keys)
+    {
+        std::deque<int> keys = {SDL_SCANCODE_W,SDL_SCANCODE_A,SDL_SCANCODE_S,SDL_SCANCODE_D};
+
+        w = keys[random(0,keys.size()-1)];
+        remove_it(&keys,w);
+        a = keys[random(0,keys.size()-1)];
+        remove_it(&keys,a);
+        s = keys[random(0,keys.size()-1)];
+        remove_it(&keys,s);
+        d = keys[random(0,keys.size()-1)];
+        //std::cout << w <<" "<< a <<" "<< s <<" "<< d <<"\n";
+    }
+    else
+    {
+        w = SDL_SCANCODE_W;
+        a = SDL_SCANCODE_A;
+        s = SDL_SCANCODE_S;
+        d = SDL_SCANCODE_D;
+    }
+}
 
 Player::Player(): Object(0,window[1]/2,"walk1",true)
 {
@@ -16,10 +42,10 @@ Player::Player(): Object(0,window[1]/2,"walk1",true)
     hitbox_offset[1] = 18;
 
     save_pos();
-
     gen_corners();
-
     update_camera();
+
+    assign_keys();
 }
 
 void Player::update_camera()
@@ -40,12 +66,12 @@ void Player::update(bool increase_anim_time)
             if (cur_movement == auto_runner)
             {
                 pos[0] += (drunkenness::movement_speed>0?drunkenness::movement_speed:1);
-                if (state[SDL_SCANCODE_D] && camera_x_offset <  window[0]/2-size[0])
+                if (state[d] && camera_x_offset <  window[0]/2-size[0])
                 {
                     camera_x_offset++;
                     pos[0]++;
                 }
-                else if (state[SDL_SCANCODE_A] && camera_x_offset > -window[0]/2+size[0])
+                else if (state[a] && camera_x_offset > -window[0]/2+size[0])
                 {
                     camera_x_offset--;
                     pos[0]--;
@@ -53,12 +79,12 @@ void Player::update(bool increase_anim_time)
             }
             else
             {
-                if (state[SDL_SCANCODE_D])      pos[0] += (drunkenness::movement_speed>0?drunkenness::movement_speed:1);
-                else if (state[SDL_SCANCODE_A]) pos[0] -= (drunkenness::movement_speed>0?drunkenness::movement_speed:1);
+                if (state[d])      pos[0] += (drunkenness::movement_speed>0?drunkenness::movement_speed:1);
+                else if (state[a]) pos[0] -= (drunkenness::movement_speed>0?drunkenness::movement_speed:1);
             }
 
-            if (state[SDL_SCANCODE_S])      pos[1] += (drunkenness::movement_speed>0?drunkenness::movement_speed:1);
-            else if (state[SDL_SCANCODE_W]) pos[1] -= (drunkenness::movement_speed>0?drunkenness::movement_speed:1);
+            if (state[s])      pos[1] += (drunkenness::movement_speed>0?drunkenness::movement_speed:1);
+            else if (state[w]) pos[1] -= (drunkenness::movement_speed>0?drunkenness::movement_speed:1);
 
             if (last_pos[0] != pos[0]  || last_pos[1] != pos[1])
             {

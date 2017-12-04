@@ -26,6 +26,7 @@ public:
     void change_movement(player_movement m);
     void save_pos();
     void kill();
+    void assign_keys();
 };
 
 #endif // _PLAYER

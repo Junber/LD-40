@@ -2,6 +2,7 @@
 #include "base.h"
 #include "object.h"
 #include "background.h"
+#include "player.h"
 
 #include <map>
 #include <iostream>
@@ -76,6 +77,7 @@ void blinking()
     else if (!random(0,drunkenness::blick_frequency))
     {
         ++blick_progress;
+        if (drunkenness::random_keys) player->assign_keys();
     }
 }
 

@@ -57,25 +57,21 @@ bool add_new_backgrounds()
 
         if (!random(0,5))
         {
-            Hitbox* h = new Hitbox(sidewalks_end_at,random(91,114),"bin",true);
+            Hitbox* h = new Hitbox(sidewalks_end_at,random(81,105),"bin",true);
             if (!random(0,1)) b->cur_anim_frame=1;
-
-            h->hitbox_size[1] = 9;
-            h->hitbox_offset[1] = 15;
-            h->gen_corners();
-
-            sidewalks_since_lantern = 0;
-        }
-
-        if (!random(0,5))
-        {
-            Hitbox* h = new Hitbox(sidewalks_end_at,random(91,114),"mailbox",false);
 
             h->hitbox_size[1] = 8;
             h->hitbox_offset[1] = 9;
             h->gen_corners();
+        }
 
-            sidewalks_since_lantern = 0;
+        if (!random(0,5))
+        {
+            Hitbox* h = new Hitbox(sidewalks_end_at,random(68,98),"mailbox",false);
+
+            h->hitbox_size[1] = 12;
+            h->hitbox_offset[1] = 15;
+            h->gen_corners();
         }
 
         sidewalks_since_lantern++;
