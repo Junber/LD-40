@@ -7,6 +7,7 @@
 #include <map>
 
 std::deque<Object*> objects, delete_on_restart;
+bool delete_all_the_shit;
 
 int camera[2] = {0,0};
 int camera_x_offset = 0;

@@ -92,7 +92,7 @@ bool visual_novel(SDL_Texture* tex, std::string text, std::string text2, bool pl
         {
             if (move_out>0) move_out++;
 
-            render_text(195-(decision?move_out:0)/2,25+(decision?0:move_out),text2,0,std::max(0,255-7*(decision?0:move_out)), true);
+            render_text(193-(decision?move_out:0)/2,25+(decision?0:move_out),text2,0,std::max(0,255-7*(decision?0:move_out)), true);
 
             if (move_out >= 100) return decision;
         }

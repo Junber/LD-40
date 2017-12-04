@@ -41,5 +41,6 @@ public:
 };
 
 extern std::deque<Object*> objects, delete_on_restart;
+extern bool delete_all_the_shit;
 
 #endif // _OBJECT
