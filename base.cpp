@@ -12,6 +12,7 @@ void limit_fps()
     last_time = SDL_GetTicks();
 }
 
+// TODO (Junber#1#): Do something with stumble
 namespace drunkenness
 {
     int blick_frequency = 1200000, blur = 255, swaying=0;

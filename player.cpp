@@ -98,9 +98,9 @@ void Player::update(bool increase_anim_time)
                 if (pos[0] < -292) pos[0] = -292;
                 if (pos[1] < 70) pos[1] = 70;
                 else if (pos[1] > 156) pos[1] = 156;
-
-                update_camera();
             }
+
+            update_camera();
 
             if (last_pos[0] != pos[0]) flipped = last_pos[0] > pos[0];
         }
@@ -187,6 +187,7 @@ void Player::save_pos()
     saved_pos[1] = pos[1];
 }
 
+// TODO (Junber#1#): Add "death" screen
 void Player::kill()
 {
     pos[0] = saved_pos[0];
@@ -212,20 +213,27 @@ void Player::drink(int alcohol)
         else if (drunk_level == 3)
         {
             drunkenness::auto_running = false;
+            camera_x_offset = 0;
             drunkenness::blick_frequency = 800;
         }
         else if (drunk_level == 4)
         {
-            drunkenness::blur = 10;
+            drunkenness::blur = 30;
             drunkenness::base_movement_speed = -2;
             drunkenness::swaying = 1800;
             drunkenness::blick_frequency = 500;
         }
         else if (drunk_level == 5)
         {
+            drunkenness::blur = 10;
             drunkenness::base_movement_speed = -3;
             drunkenness::random_keys = true;
             drunkenness::swaying = 900;
+        }
+        else
+        {
+// TODO (Junber#1#): Add win screen
+            breakk = true;
         }
 
         drunkenness::movement_speed = drunkenness::base_movement_speed;

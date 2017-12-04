@@ -51,6 +51,7 @@ void update()
     if (delete_all_the_shit)
     {
         while (!delete_on_restart.empty()) delete delete_on_restart[0];
+        delete_all_the_shit = false;
     }
 }
 

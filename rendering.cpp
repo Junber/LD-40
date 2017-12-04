@@ -44,6 +44,7 @@ SDL_Texture* load_image(std::string s)
 }
 
 int blick_progress = -1;
+// TODO (Junber#1#): Make blinking faster for low level
 void blinking()
 {
     if (blick_progress >= 0)
@@ -86,6 +87,7 @@ bool sort_criteria(Object* a, Object* b)
     return a->pos[1]+a->hitbox_offset[1] < b->pos[1]+b->hitbox_offset[1];
 }
 
+// TODO (Junber#1#): Add drunkenness UI
 void render()
 {
     for (Background* o: backgrounds)

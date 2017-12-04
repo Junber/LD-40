@@ -18,8 +18,28 @@ Entrance::Entrance(int x, int y, int sx, int sy, Background* door_to_be_opened):
 
 void Entrance::enter()
 {
+    int patron_num = 5-player->drunk_level+(player->alcohol_points < 7), img_num;
+    switch (patron_num)
+    {
+    case 5:
+    case 0:
+        img_num = 0;
+        break;
+    case 4:
+        img_num = random(0,4);
+        break;
+    case 3:
+        img_num = random(0,7);
+        break;
+    case 2:
+        img_num = random(0,9);
+        break;
+    case 1:
+        img_num = random(0,4);
+    }
+
     player->save_pos();
-    dialog("test", load_image("bar"));
+    dialog("test", load_image("bar_"+std::to_string(patron_num)+std::to_string(img_num)));
     delete this;
 }
 

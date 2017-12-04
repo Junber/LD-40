@@ -4,6 +4,7 @@
 #include <map>
 
 int sfx_volume, music_volume;
+// TODO (Junber#1#): Add sounds and more music
 
 void load_option_sound(std::string s, std::string s2)
 {

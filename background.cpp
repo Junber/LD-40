@@ -27,6 +27,7 @@ Background::~Background()
 
 int walls_end_at=-window[0], sidewalks_end_at=-window[0], streets_end_at=-window[0], sidewalks_since_lantern=0, walls_since_bar=0;
 
+// TODO (Junber#1#): Dont have obstacles too close to start
 bool add_new_backgrounds()
 {
     bool did_something=false;
@@ -36,16 +37,16 @@ bool add_new_backgrounds()
         auto b = new Background(walls_end_at,0,"wall",true);
 
         walls_since_bar++;
-        if (walls_since_bar > 40-player->drunk_level*5)
+        if (walls_since_bar > 22-player->drunk_level*3)
         {
             auto d = new Background(walls_end_at+65,40,"door",true);
-            b->cur_anim_frame=8;
-            new Entrance(walls_end_at+65,0,30,b->size[1]+80,d);
+            b->cur_anim_frame=7;
+            new Entrance(walls_end_at+65,0,30,b->size[1]+90,d);
             walls_since_bar = 0;
         }
         else
         {
-            b->cur_anim_frame=random(0,7);
+            b->cur_anim_frame=random(0,6);
             if (b->cur_anim_frame <= 2 && !random(0,1)) new Background(walls_end_at+random(10,b->size[0]-50),random(10,b->size[1]-60),"poster",true);
         }
 

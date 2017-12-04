@@ -33,7 +33,7 @@ Hitbox::Hitbox(int x, int y, std::string s, bool load_as_animation, bool adjust_
 
 void Hitbox::update(bool increase_anim_time)
 {
-    if (collides(player))
+    if (player->is_in_control() && collides(player))
     {
         if (drunkenness::auto_running) player->kill();
         else

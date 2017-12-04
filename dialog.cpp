@@ -35,7 +35,9 @@ void load_drinks()
 
 drink* random_drink()
 {
-    return drinks[random(0,drinks.size()-1)];
+    drink* d = drinks[random(0,drinks.size()-1)];
+    remove_it(&drinks,d);
+    return d;
 }
 
 bool visual_novel(SDL_Texture* tex, std::string text, std::string text2, bool player)
