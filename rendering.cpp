@@ -102,7 +102,6 @@ bool sort_criteria(Object* a, Object* b)
     return a->pos[1]+a->size[1]/2 < b->pos[1]+b->size[1]/2;
 }
 
-// TODO (Junber#1#): Add drunkenness UI
 void render_everything(bool blink)
 {
     for (Background* o: backgrounds)

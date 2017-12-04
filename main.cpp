@@ -120,9 +120,9 @@ int main(int argc, char* args[])
 			else if (e.type == SDL_KEYDOWN)
 			{
 			    if (e.key.keysym.sym == SDLK_ESCAPE) options();
-			    else if (e.key.keysym.sym == SDLK_e) player->drink(15);
-			    else if (e.key.keysym.sym == SDLK_q) dialog("test",load_image("bar"));
-			    else if (e.key.keysym.sym == SDLK_f) player->change_movement(stumble);
+			    //else if (e.key.keysym.sym == SDLK_e) player->drink(15);
+			    //else if (e.key.keysym.sym == SDLK_q) dialog("test",load_image("bar"));
+			    //else if (e.key.keysym.sym == SDLK_f) player->change_movement(stumble);
 			}
         }
 

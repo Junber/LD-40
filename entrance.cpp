@@ -3,6 +3,7 @@
 #include "base.h"
 #include "rendering.h"
 #include "dialog.h"
+#include "sound.h"
 
 #include <iostream>
 
@@ -39,7 +40,8 @@ void Entrance::enter()
     }
 
     player->save_pos();
-    dialog("test", load_image("bar_"+std::to_string(patron_num)+std::to_string(img_num)));
+    dialog(std::to_string(player->drunk_level)+std::to_string(player->dialog_this_level+1), load_image("bar_"+std::to_string(patron_num)+std::to_string(img_num)));
+    player->dialog_this_level++;
     delete this;
 }
 
@@ -61,6 +63,7 @@ void Entrance::update(bool increase_anim_time)
         {
             player->change_movement(stop);
             opening = true;
+            play_sound(load_sound("door_open"));
         }
         else if (drunkenness::auto_running && player->pos[0]+player->size[0]/2 >= pos[0]+size[0]/2) player->change_movement(walking_up);
     }

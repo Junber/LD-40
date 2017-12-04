@@ -2,6 +2,7 @@
 #include "rendering.h"
 #include "base.h"
 #include "dialog.h"
+#include "sound.h"
 
 #include <string>
 #include <iostream>
@@ -37,6 +38,7 @@ Player::Player(): Object(0,window[1]/2,"walk1",true)
 {
     drunk_level = 1;
     alcohol_points = 0;
+    dialog_this_level=0;
     hits = 0;
     change_movement(drunkenness::auto_running?auto_runner:in_control);
 
@@ -243,6 +245,7 @@ void Player::drink(int alcohol)
     if (alcohol_points >= 15)
     {
         ++drunk_level;
+        dialog_this_level=0;
         alcohol_points -= 15;
 
         if (drunk_level == 2)
@@ -266,6 +269,7 @@ void Player::drink(int alcohol)
             drunkenness::blick_frequency = 500;
             drunkenness::see_ui = false;
             drunkenness::flamingo_people = true;
+            play_music(load_music("Barjazz2"));
         }
         else if (drunk_level == 5)
         {
@@ -289,6 +293,8 @@ void Player::drink(int alcohol)
 
                 Object::update(true);
                 drunkenness::blur += blur_per_frame;
+
+                if (cur_anim_frame==5 && !cur_anim_time) play_sound(load_sound("vomit"));
 
                 render_everything(false);
                 limit_fps();

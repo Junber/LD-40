@@ -4,7 +4,7 @@ Lager:5
 Pale Ale:5
 Bock:6
 Doppel-bock:6
-Cider:4
+Cider:5
 Vodka:7
 Rum:7
 Stroh 80:8
@@ -23,8 +23,8 @@ Cai-pirinha:6
 Mead:5
 Long Island Iced Tea:5
 Rum and Coke:5
-Light Beer:4
-Radler:4
+Light Beer:5
+Radler:5
 Cham-pagne:5
 Zombie:6
 Tequila Sunrise:6

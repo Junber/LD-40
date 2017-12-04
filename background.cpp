@@ -50,7 +50,7 @@ bool add_new_backgrounds()
             if (b->cur_anim_frame <= 1 && !random(0,1))
             {
                 auto p = new Background(walls_end_at+random(5,b->size[0]-50),random(5,b->size[1]-70),"poster",true);
-                p->cur_anim_frame = random(0,2);
+                p->cur_anim_frame = random(0,3);
             }
         }
 
