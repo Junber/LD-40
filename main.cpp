@@ -22,9 +22,24 @@ void *__gxx_personality_v0;
 #endif
 
 bool sway_at_next_opportunity=false;
+int time_since_car = 0;
 void update()
 {
-    if (!random(0,50)) new Pedestrian(camera[0]+window[0]+20, random(70,156), (random(0,1)?-1:1), "ped"+std::to_string(random(1,6)));
+    time_since_car++;
+    if (!random(0,50)) new Pedestrian(camera[0]-camera_x_offset+window[0]+20, random(70,106), (random(0,1)?-1:1), "ped"+std::to_string(random(1,6)), true);
+    if (time_since_car >= 100 && !random(0,100))
+    {
+        auto p = new Pedestrian(camera[0]-camera_x_offset+window[0]+100, window[1]-47, -3, "car"+std::to_string(random(1,4)), false);
+
+        p->flipped = false;
+        p->hitbox_size[0] = 146;
+        p->hitbox_size[1] = 21;
+        p->hitbox_offset[1] = 36;
+
+        time_since_car = 0;
+    }
+
+
 
     if (drunkenness::speed_randomness && !random(0,30))
     {

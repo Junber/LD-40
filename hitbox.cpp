@@ -54,7 +54,7 @@ void Hitbox::update(bool increase_anim_time)
     }
 }
 
-Pedestrian::Pedestrian(int x, int y, int direction, std::string s) : Hitbox(x,y,s,true,false)
+Pedestrian::Pedestrian(int x, int y, int direction, std::string s, bool load_as_animation) : Hitbox(x,y,s,load_as_animation,false)
 {
     delete_on_restart.push_back(this);
     di = direction;

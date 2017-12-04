@@ -16,7 +16,7 @@ class Pedestrian: public Hitbox
 {
 public:
     int di;
-    Pedestrian(int x, int y, int direction, std::string s);
+    Pedestrian(int x, int y, int direction, std::string s, bool load_as_animation=false);
     ~Pedestrian();
 
     void update(bool increase_anim_time=true);
