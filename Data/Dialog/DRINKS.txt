@@ -16,7 +16,7 @@ Jäger-meister:7
 Sambuca:7
 Martini:5
 Mojito:6
-Piña colada:6
+Pina colada:6
 Sangria:5
 Bloody Mary:6
 Cai-pirinha:6
