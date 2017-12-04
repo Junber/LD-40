@@ -18,7 +18,7 @@ class Player: public Object
     void update_camera();
 
 public:
-    int drunk_level;
+    int drunk_level, alcohol_points;
 
     Player();
     void update(bool increase_anim_time=true);
@@ -27,6 +27,7 @@ public:
     void save_pos();
     void kill();
     void assign_keys();
+    void drink(int alcohol);
 };
 
 #endif // _PLAYER

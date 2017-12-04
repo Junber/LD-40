@@ -34,7 +34,8 @@ void Player::assign_keys()
 
 Player::Player(): Object(0,window[1]/2,"walk1",true)
 {
-    drunk_level = 4;
+    drunk_level = 1;
+    alcohol_points = 0;
     change_movement(drunkenness::auto_running?auto_runner:in_control);
 
     hitbox_size[0] = 9;
@@ -193,4 +194,41 @@ void Player::kill()
     camera_x_offset = 0;
 
     delete_all_the_shit = true;
+}
+
+void Player::drink(int alcohol)
+{
+    alcohol_points += alcohol;
+    if (alcohol_points >= 15)
+    {
+        ++drunk_level;
+        alcohol_points -= 15;
+
+        if (drunk_level == 2)
+        {
+            drunkenness::blick_frequency = 1200;
+            drunkenness::base_movement_speed = 1;
+        }
+        else if (drunk_level == 3)
+        {
+            drunkenness::auto_running = false;
+            drunkenness::blick_frequency = 800;
+        }
+        else if (drunk_level == 4)
+        {
+            drunkenness::blur = 10;
+            drunkenness::base_movement_speed = -2;
+            drunkenness::swaying = 1800;
+            drunkenness::blick_frequency = 500;
+        }
+        else if (drunk_level == 5)
+        {
+            drunkenness::base_movement_speed = -3;
+            drunkenness::random_keys = true;
+            drunkenness::swaying = 900;
+        }
+
+        drunkenness::movement_speed = drunkenness::base_movement_speed;
+        change_movement(drunkenness::auto_running?auto_runner:in_control);
+    }
 }

@@ -137,5 +137,5 @@ void dialog(std::string file_name, SDL_Texture* tex)
     }
     file.close();
 
-    player->drunk_level += selected_drink->alcohol;
+    player->drink(selected_drink->alcohol);
 }
