@@ -53,7 +53,7 @@ void blinking()
 
         SDL_SetRenderDrawColor(renderer,0,0,0,255);
 
-        if (blick_progress < 10)
+        if (blick_progress < 10/(1+drunkenness::fast_blinking))
         {
             SDL_Rect r = {0,0,window[0],blick_progress*window[1]/10};
             SDL_RenderFillRect(renderer,&r);
@@ -61,13 +61,13 @@ void blinking()
             r.y = window[1]-r.h;
             SDL_RenderFillRect(renderer,&r);
         }
-        else if (blick_progress < 40)
+        else if (blick_progress < 40/(1+drunkenness::fast_blinking))
         {
             SDL_RenderClear(renderer);
         }
-        else if (blick_progress < 50)
+        else if (blick_progress < 50/(1+drunkenness::fast_blinking))
         {
-            SDL_Rect r = {0,0,window[0],(50-blick_progress)*window[1]/10};
+            SDL_Rect r = {0,0,window[0],(50/(1+drunkenness::fast_blinking)-blick_progress)*window[1]/10};
             SDL_RenderFillRect(renderer,&r);
 
             r.y = window[1]-r.h;

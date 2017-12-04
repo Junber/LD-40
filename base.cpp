@@ -12,11 +12,10 @@ void limit_fps()
     last_time = SDL_GetTicks();
 }
 
-// TODO (Junber#1#): Do something with stumble
 namespace drunkenness
 {
     int blick_frequency = 1200000, blur = 255, swaying=0;
-    bool speed_randomness=false, auto_running=true, random_keys=false;
+    bool speed_randomness=false, auto_running=true, random_keys=false, fast_blinking=true;
     int base_movement_speed=2, movement_speed = base_movement_speed; //for negative numbers: -x = 1/x
 }
 

@@ -5,7 +5,7 @@
 
 enum player_movement
 {
-    auto_runner, in_control, stumble, sway, walking_up, stop
+    auto_runner, in_control, stumble, sway, walking_up, stop, collide, fall, die, revive
 };
 
 class Player;
@@ -18,7 +18,7 @@ class Player: public Object
     void update_camera();
 
 public:
-    int drunk_level, alcohol_points;
+    int drunk_level, alcohol_points, hits;
 
     Player();
     void update(bool increase_anim_time=true);

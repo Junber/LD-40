@@ -1,6 +1,7 @@
 #include "player.h"
 #include "rendering.h"
 #include "base.h"
+#include "dialog.h"
 
 #include <string>
 #include <iostream>
@@ -36,6 +37,7 @@ Player::Player(): Object(0,window[1]/2,"walk1",true)
 {
     drunk_level = 1;
     alcohol_points = 0;
+    hits = 0;
     change_movement(drunkenness::auto_running?auto_runner:in_control);
 
     hitbox_size[0] = 9;
@@ -153,6 +155,36 @@ void Player::update(bool increase_anim_time)
         pos[1] -= drunkenness::movement_speed;
         gen_corners();
     }
+    else if (cur_movement == collide || cur_movement == revive)
+    {
+        cur_anim_time++;
+        if (cur_anim_time >= anim->second[cur_anim_frame] && cur_anim_frame >= anim->second.size()-1)
+        {
+            change_movement(drunkenness::auto_running?auto_runner:in_control);
+            if (pos[1] < 110) pos[1] += 20;
+            else pos[1] -= 20;
+
+            gen_corners();
+        }
+    }
+    else if (cur_movement == fall)
+    {
+        cur_anim_time++;
+        if (cur_anim_time >= anim->second[cur_anim_frame] && cur_anim_frame >= anim->second.size()-1)
+        {
+            change_movement(revive);
+        }
+    }
+    else if (cur_movement == die)
+    {
+        cur_anim_time++;
+        if (cur_anim_time >= anim->second[cur_anim_frame] && cur_anim_frame >= anim->second.size()-1)
+        {
+            kill();
+            update();
+            return;
+        }
+    }
 
     Object::update(false);
 }
@@ -165,8 +197,11 @@ bool Player::is_in_control()
 void Player::change_movement(player_movement m)
 {
     cur_movement = m;
-    if (m == in_control) load_animation("walk"+std::to_string(drunk_level));
-    if (m == sway)
+    if (m == in_control || m == auto_runner) load_animation("walk"+std::to_string(drunk_level));
+    if (m == fall || m == die) load_animation("death");
+    if (m == revive) load_animation("revive");
+    else if (m == collide) load_animation("collide");
+    else if (m == sway)
     {
         load_animation("walk4_shuffle");
         if (drunk_level==4) pos[0] += 4;
@@ -187,12 +222,16 @@ void Player::save_pos()
     saved_pos[1] = pos[1];
 }
 
-// TODO (Junber#1#): Add "death" screen
 void Player::kill()
 {
     pos[0] = saved_pos[0];
     pos[1] = saved_pos[1];
     camera_x_offset = 0;
+    hits = 0;
+
+    change_movement(drunkenness::auto_running?auto_runner:in_control);
+
+    visual_novel(load_image("endscreen"),"","",false);
 
     delete_all_the_shit = true;
 }
@@ -215,6 +254,7 @@ void Player::drink(int alcohol)
             drunkenness::auto_running = false;
             camera_x_offset = 0;
             drunkenness::blick_frequency = 800;
+            drunkenness::fast_blinking = false;
         }
         else if (drunk_level == 4)
         {

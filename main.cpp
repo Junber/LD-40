@@ -51,7 +51,7 @@ void update()
     {
         if (player->cur_anim_frame==2)
         {
-            player->change_movement(sway);
+            player->change_movement(random(0,1)?sway:stumble);
             sway_at_next_opportunity = false;
         }
         else sway_at_next_opportunity = true;
@@ -98,6 +98,8 @@ int main(int argc, char* args[])
     render_init();
     font_init();
     sound_init();
+
+    visual_novel(load_image("startscreen"),"","",false);
 
     player = new Player();
 

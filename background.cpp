@@ -27,7 +27,6 @@ Background::~Background()
 
 int walls_end_at=-window[0], sidewalks_end_at=-window[0], streets_end_at=-window[0], sidewalks_since_lantern=0, walls_since_bar=0;
 
-// TODO (Junber#1#): Dont have obstacles too close to start
 bool add_new_backgrounds()
 {
     bool did_something=false;
@@ -59,23 +58,26 @@ bool add_new_backgrounds()
         auto b = new Background(sidewalks_end_at,90,"sidewalk",true);
         if (!random(0,5)) b->cur_anim_frame=1;
 
-        if (!random(0,5))
+        if (window[0]/4 < sidewalks_end_at || -window[0]/4 > sidewalks_end_at)
         {
-            Hitbox* h = new Hitbox(sidewalks_end_at,random(81,105),"bin",true);
-            if (!random(0,1)) b->cur_anim_frame=1;
+            if (!random(0,5))
+            {
+                Hitbox* h = new Hitbox(sidewalks_end_at,random(81,105),"bin",true);
+                if (!random(0,1)) b->cur_anim_frame=1;
 
-            h->hitbox_size[1] = 8;
-            h->hitbox_offset[1] = 9;
-            h->gen_corners();
-        }
+                h->hitbox_size[1] = 8;
+                h->hitbox_offset[1] = 9;
+                h->gen_corners();
+            }
 
-        if (!random(0,5))
-        {
-            Hitbox* h = new Hitbox(sidewalks_end_at,random(68,98),"mailbox",false);
+            if (!random(0,5))
+            {
+                Hitbox* h = new Hitbox(sidewalks_end_at,random(68,98),"mailbox",false);
 
-            h->hitbox_size[1] = 12;
-            h->hitbox_offset[1] = 15;
-            h->gen_corners();
+                h->hitbox_size[1] = 12;
+                h->hitbox_offset[1] = 15;
+                h->gen_corners();
+            }
         }
 
         sidewalks_since_lantern++;

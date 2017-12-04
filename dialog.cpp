@@ -6,6 +6,7 @@
 
 #include <fstream>
 #include <deque>
+#include <iostream>
 
 struct drink
 {
@@ -42,7 +43,7 @@ drink* random_drink()
 
 bool visual_novel(SDL_Texture* tex, std::string text, std::string text2, bool player)
 {
-    bool choice = !text2.empty(), decision=0;
+    bool choice = !text2.empty(), textbox = !text.empty(), decision=false;
     SDL_Texture *top = load_image("top_"+std::string(player?"play":"bar")), *bottom = load_image("bottom_"+std::string(player?"play":"bar")),
         *middle = load_image("middle");
 
@@ -79,24 +80,28 @@ bool visual_novel(SDL_Texture* tex, std::string text, std::string text2, bool pl
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer,tex,nullptr,nullptr);
 
-        SDL_Rect r = {12,20,208,20};
-        SDL_RenderCopy(renderer,top,nullptr,&r);
-        while (r.y <= height-16)
+        if (textbox)
         {
+            //std::cout << "." << text <<  << "\n";
+            SDL_Rect r = {12,20,208,20};
+            SDL_RenderCopy(renderer,top,nullptr,&r);
+            while (r.y <= height-16)
+            {
+                r.y += 20;
+                SDL_RenderCopy(renderer,middle,nullptr,&r);
+            }
             r.y += 20;
-            SDL_RenderCopy(renderer,middle,nullptr,&r);
-        }
-        r.y += 20;
-        SDL_RenderCopy(renderer,bottom,nullptr,&r);
+            SDL_RenderCopy(renderer,bottom,nullptr,&r);
 
-        render_text(37 +(decision?0:move_out)/2,25+(decision?move_out:0),text ,0,std::max(0,255-7*(decision?move_out:0)));
-        if (choice)
-        {
-            if (move_out>0) move_out++;
+            render_text(37 +(decision?0:move_out)/2,25+(decision?move_out:0),text ,0,std::max(0,255-7*(decision?move_out:0)));
+            if (choice)
+            {
+                if (move_out>0) move_out++;
 
-            render_text(193-(decision?move_out:0)/2,25+(decision?0:move_out),text2,0,std::max(0,255-7*(decision?0:move_out)), true);
+                render_text(193-(decision?move_out:0)/2,25+(decision?0:move_out),text2,0,std::max(0,255-7*(decision?0:move_out)), true);
 
-            if (move_out >= 100) return decision;
+                if (move_out >= 100) return decision;
+            }
         }
 
         SDL_RenderPresent(renderer);

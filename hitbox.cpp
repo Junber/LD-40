@@ -35,7 +35,13 @@ void Hitbox::update(bool increase_anim_time)
 {
     if (player->is_in_control() && collides(player))
     {
-        if (drunkenness::auto_running) player->kill();
+        if (drunkenness::auto_running)
+        {
+            player->hits++;
+            if (player->hits == 1) player->change_movement(collide);
+            else if (player->hits == 2) player->change_movement(fall);
+            else if (player->hits == 3) player->change_movement(die);
+        }
         else
         {
             if (player->pos[0] == pos[0] && player->pos[1] == pos[1]) ++player->pos[0];
