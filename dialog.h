@@ -5,6 +5,7 @@
 #include <SDL.h>
 
 void load_drinks();
+void options();
 bool visual_novel(SDL_Texture* tex, std::string text, std::string text2, bool player);
 void dialog(std::string file_name, SDL_Texture* tex);
 

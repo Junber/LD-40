@@ -12,8 +12,7 @@ SDL_Window* renderwindow;
 SDL_Renderer* renderer;
 
 const int window[2] = {320,180};
-int zoom = 1;
-bool fullscreen = false;
+int zoom = 1, fullscreen = false;
 
 void load_option_rendering(std::string s, std::string s2)
 {
@@ -29,10 +28,20 @@ void render_init()
     SDL_DisplayMode current;
     SDL_GetDesktopDisplayMode(0, &current);
 
-    renderwindow = SDL_CreateWindow("LD 40", 50, 50, fullscreen?current.w:window[0]*zoom, fullscreen?current.h:window[1]*zoom, SDL_WINDOW_SHOWN | (fullscreen&SDL_WINDOW_FULLSCREEN));
+    renderwindow = SDL_CreateWindow("LD 40", 50, 50, fullscreen?current.w:window[0]*zoom, fullscreen?current.h:window[1]*zoom, SDL_WINDOW_SHOWN | (fullscreen?SDL_WINDOW_FULLSCREEN_DESKTOP:0));
     renderer = SDL_CreateRenderer(renderwindow, -1, SDL_RENDERER_ACCELERATED);
 
     SDL_RenderSetLogicalSize(renderer, window[0], window[1]);
+}
+
+void render_init_update()
+{
+    SDL_SetWindowFullscreen(renderwindow,fullscreen?SDL_WINDOW_FULLSCREEN_DESKTOP:0);
+
+    SDL_DisplayMode current;
+    SDL_GetDesktopDisplayMode(0, &current);
+
+    SDL_SetWindowSize(renderwindow,fullscreen?current.w:window[0]*zoom, fullscreen?current.h:window[1]*zoom);
 }
 
 std::map<std::string,SDL_Texture*> loaded_textures;
@@ -44,7 +53,6 @@ SDL_Texture* load_image(std::string s)
 }
 
 int blick_progress = -1;
-// TODO (Junber#1#): Make blinking faster for low level
 void blinking()
 {
     if (blick_progress >= 0)

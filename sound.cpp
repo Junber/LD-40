@@ -39,6 +39,15 @@ void sound_init()
     play_music(load_music("Barjazz"));
 }
 
+void sound_init_update()
+{
+    Mix_VolumeMusic(music_volume);
+    for (auto s: loaded_sounds)
+    {
+        Mix_VolumeChunk(s.second, sfx_volume);
+    }
+}
+
 int selfcut_channel[3]={-1,-1};
 void play_sound(Mix_Chunk* s, int selfcut)
 {

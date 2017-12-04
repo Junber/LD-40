@@ -1,2 +1,32 @@
-beer:5
-vodka:7
+Pilsner:5
+Lager:5
+Pale Ale:5
+Bock:6
+Doppelbock:6
+Cider:4
+Vodka:7
+Rum:7
+Stroh 80:8
+Whiskey:7
+Wine:5
+Baileys:6
+Sake:5
+Amaretto:7
+Jägermeister:7
+Sambuca:7
+Martini:5
+Mojito:6
+Piña colada:6
+Sangria:5
+Bloody Mary:6
+Caipirinha:6
+Mead:5
+Long Island Iced Tea:5
+Rum and Coke:5
+Light Beer:4
+Radler:4
+Champagne:5
+Zombie:6
+Tequila Sunrise:6
+Kamikaze:6
+Grasshopper:6

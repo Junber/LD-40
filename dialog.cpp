@@ -3,6 +3,7 @@
 #include "rendering.h"
 #include "font.h"
 #include "player.h"
+#include "sound.h"
 
 #include <fstream>
 #include <deque>
@@ -41,6 +42,74 @@ drink* random_drink()
     return d;
 }
 
+#define option_num 5
+void options()
+{
+    std::string text[option_num] = {"Fullscreen","Zoom","SFX Volume","Music Volume","Exit"};
+    int *value[option_num] = {&fullscreen, &zoom, &sfx_volume, &music_volume, nullptr};
+    int range_max[option_num] = {1,9,128,128,0};
+    int range_min[option_num] = {0,1,0,0,0};
+    int pointer = 0;
+
+    int w,h;
+    SDL_Texture* pointer_tex = load_image("pointer");
+    SDL_QueryTexture(pointer_tex,nullptr,nullptr,&w,&h);
+
+
+    SDL_Event e;
+	while (!breakk)
+    {
+        while(SDL_PollEvent(&e))
+        {
+			if (e.type == SDL_QUIT) breakk = true;
+
+			else if (e.type == SDL_KEYDOWN)
+			{
+			    if (e.key.keysym.sym == SDLK_ESCAPE) return;
+			    else if (e.key.keysym.sym == SDLK_e || e.key.keysym.sym == SDLK_a || e.key.keysym.sym == SDLK_d)
+                {
+                    if (value[pointer])
+                    {
+                        if (e.key.keysym.sym == SDLK_a) --(*value[pointer]);
+                        else                            ++(*value[pointer]);;
+
+                        if (*value[pointer] > range_max[pointer]) *value[pointer] = range_min[pointer];
+                        if (*value[pointer] < range_min[pointer]) *value[pointer] = range_max[pointer];
+
+                        render_init_update();
+                        sound_init_update();
+                    }
+                    else if (e.key.keysym.sym == SDLK_e) breakk = true;
+                }
+			    else if (e.key.keysym.sym == SDLK_w)
+                {
+                    pointer--;
+                    if (pointer<0) pointer = option_num-1;
+                }
+			    else if (e.key.keysym.sym == SDLK_s)
+                {
+                    pointer++;
+                    if (pointer>=option_num) pointer = 0;
+                }
+			}
+        }
+
+        SDL_SetRenderDrawColor(renderer,0,0,0,255);
+        SDL_RenderClear(renderer);
+
+        for (int i=0; i<option_num;i++)
+        {
+            render_text(50,50+i*20,text[i]+(value[i]?": "+std::to_string(*value[i]):""),255);
+        }
+
+        SDL_Rect r = {45-w,58+pointer*20,w,h};
+        SDL_RenderCopy(renderer,pointer_tex,nullptr,&r);
+
+        SDL_RenderPresent(renderer);
+        limit_fps();
+    }
+}
+
 bool visual_novel(SDL_Texture* tex, std::string text, std::string text2, bool player)
 {
     bool choice = !text2.empty(), textbox = !text.empty(), decision=false;
@@ -61,7 +130,7 @@ bool visual_novel(SDL_Texture* tex, std::string text, std::string text2, bool pl
 
 			else if (e.type == SDL_KEYDOWN)
 			{
-			    if (e.key.keysym.sym == SDLK_ESCAPE) breakk = true;
+			    if (e.key.keysym.sym == SDLK_ESCAPE) options();
 			    else if (e.key.keysym.sym == SDLK_e && !choice) return 0;
 			    else if (e.key.keysym.sym == SDLK_a && choice)
                 {

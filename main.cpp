@@ -115,7 +115,7 @@ int main(int argc, char* args[])
 
 			else if (e.type == SDL_KEYDOWN)
 			{
-			    if (e.key.keysym.sym == SDLK_ESCAPE) breakk = true;
+			    if (e.key.keysym.sym == SDLK_ESCAPE) options();
 			    else if (e.key.keysym.sym == SDLK_e) player->drink(15);
 			    else if (e.key.keysym.sym == SDLK_r) player->change_movement(sway);
 			    else if (e.key.keysym.sym == SDLK_q) dialog("test",load_image("bar"));
