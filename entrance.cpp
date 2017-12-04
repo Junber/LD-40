@@ -39,9 +39,14 @@ void Entrance::enter()
         img_num = random(0,4);
     }
 
-    player->save_pos();
-    dialog(std::to_string(player->drunk_level)+std::to_string(player->dialog_this_level+1), load_image("bar_"+std::to_string(patron_num)+std::to_string(img_num)));
+    //std::cout << std::to_string(player->drunk_level)+std::to_string(player->dialog_this_level+1) << " " << player->alcohol_points<<"\n";
+
+    std::string file = std::to_string(player->drunk_level)+std::to_string(player->dialog_this_level+1);
     player->dialog_this_level++;
+
+    player->save_pos();
+    delete_all_the_shit = true;
+    dialog(file, load_image("bar_"+std::to_string(patron_num)+std::to_string(img_num)));
     delete this;
 }
 

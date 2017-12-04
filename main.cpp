@@ -29,7 +29,7 @@ void update()
     if (!random(0,50))
     {
         bool flamingo = drunkenness::flamingo_people && !random(0,2);
-        new Pedestrian(camera[0]-camera_x_offset+window[0]+20, random(70,106), (random(0,1)?-1:1), flamingo?"flamingo":"ped"+std::to_string(random(1,6)), true);
+        new Pedestrian(camera[0]-camera_x_offset+window[0]+20, random(70,140), (random(0,1)?-1:1), flamingo?"flamingo":"ped"+std::to_string(random(1,6)), true);
     }
     if (time_since_car >= 100 && !random(0,100))
     {
@@ -119,7 +119,7 @@ int main(int argc, char* args[])
 
 			else if (e.type == SDL_KEYDOWN)
 			{
-			    if (e.key.keysym.sym == SDLK_ESCAPE) options();
+			    //if (e.key.keysym.sym == SDLK_ESCAPE) options();
 			    //else if (e.key.keysym.sym == SDLK_e) player->drink(15);
 			    //else if (e.key.keysym.sym == SDLK_q) dialog("test",load_image("bar"));
 			    //else if (e.key.keysym.sym == SDLK_f) player->change_movement(stumble);

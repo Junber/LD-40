@@ -223,6 +223,8 @@ void Player::save_pos()
 {
     saved_pos[0] = pos[0];
     saved_pos[1] = pos[1];
+
+    hits = 0;
 }
 
 void Player::kill()
