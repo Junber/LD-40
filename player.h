@@ -5,7 +5,7 @@
 
 enum player_movement
 {
-    auto_runner, in_control, stumble, sway, walking_up
+    auto_runner, in_control, stumble, sway, walking_up, stop
 };
 
 class Player;

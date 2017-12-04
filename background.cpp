@@ -36,10 +36,11 @@ bool add_new_backgrounds()
         auto b = new Background(walls_end_at,0,"wall",true);
 
         walls_since_bar++;
-        if (walls_since_bar > 40-player->drunk_level*5)
+        if (walls_since_bar > 25-player->drunk_level*5)
         {
+            auto d = new Background(walls_end_at+65,40,"door",true);
             b->cur_anim_frame=2;
-            new Entrance(walls_end_at+65,0,30,b->size[1]+80);
+            new Entrance(walls_end_at+65,0,30,b->size[1]+80,d);
             walls_since_bar = 0;
         }
         else if (!random(0,20)) b->cur_anim_frame=1;

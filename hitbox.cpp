@@ -77,5 +77,6 @@ void Pedestrian::update(bool increase_anim_time)
     gen_corners();
 
     Hitbox::update();
+
     Object::update(false);
 }
