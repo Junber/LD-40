@@ -1,6 +1,7 @@
 #include "hitbox.h"
 #include "player.h"
 #include "base.h"
+#include "rendering.h"
 
 #include <iostream>
 
@@ -16,6 +17,8 @@ Hitbox::Hitbox(int x, int y, int sx, int sy): Object(x,y,"")
 
     pos[0] += size[0]/2;
     pos[1] += size[1]/2;
+
+    animated_already = animating_now = false;
 
     gen_corners();
 }
@@ -58,6 +61,23 @@ void Hitbox::update(bool increase_anim_time)
 
         //std::cout << hitbox_size[0] << " " << corners[0][0] << " " << corners[3][0] << " " << player->pos[0]-player->hitbox_size[0]/2 << "\n";
     }
+
+    if (increase_anim_time && !animated_already)
+    {
+        if (animating_now)
+        {
+            Object::update(true);
+            if (!cur_anim_frame && !cur_anim_time)
+            {
+                animated_already = true;
+                animating_now = false;
+            }
+        }
+        else if (!random(0,120) && pos[0] > camera[0]+30 && pos[0] < camera[0]+window[0]-30)
+        {
+            animating_now = true;
+        }
+    }
 }
 
 Pedestrian::Pedestrian(int x, int y, int direction, std::string s, bool load_as_animation) : Hitbox(x,y,s,load_as_animation,false)
@@ -82,7 +102,6 @@ void Pedestrian::update(bool increase_anim_time)
     cur_anim_time += abs(di);
     gen_corners();
 
-    Hitbox::update();
-
+    Hitbox::update(false);
     Object::update(false);
 }

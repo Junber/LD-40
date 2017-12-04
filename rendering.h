@@ -12,6 +12,6 @@ void load_option_rendering(std::string s, std::string s2);
 void render_init();
 void render_init_update();
 SDL_Texture* load_image(std::string s);
-void render();
+void render_everything(bool blink=true);
 
 #endif // _RENDERING

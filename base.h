@@ -15,7 +15,7 @@ void limit_fps();
 namespace drunkenness
 {
     extern int blick_frequency, blur, swaying;
-    extern bool speed_randomness,auto_running, random_keys, fast_blinking;
+    extern bool speed_randomness,auto_running, random_keys, fast_blinking, see_ui, flamingo_people, mailbox_monster;
     extern int base_movement_speed, movement_speed; //for negative numbers: -x = 1/x
 }
 

@@ -201,6 +201,7 @@ void Player::change_movement(player_movement m)
     if (m == fall || m == die) load_animation("death");
     if (m == revive) load_animation("revive");
     else if (m == collide) load_animation("collide");
+    else if (m == puking) load_animation("puke");
     else if (m == sway)
     {
         load_animation("walk4_shuffle");
@@ -255,25 +256,47 @@ void Player::drink(int alcohol)
             camera_x_offset = 0;
             drunkenness::blick_frequency = 800;
             drunkenness::fast_blinking = false;
+            drunkenness::mailbox_monster = true;
         }
         else if (drunk_level == 4)
         {
-            drunkenness::blur = 30;
+            drunkenness::blur = 40;
             drunkenness::base_movement_speed = -2;
             drunkenness::swaying = 1800;
             drunkenness::blick_frequency = 500;
+            drunkenness::see_ui = false;
+            drunkenness::flamingo_people = true;
         }
         else if (drunk_level == 5)
         {
             drunkenness::blur = 10;
             drunkenness::base_movement_speed = -3;
             drunkenness::random_keys = true;
-            drunkenness::swaying = 900;
+            drunkenness::swaying = 1200;
         }
         else
         {
-// TODO (Junber#1#): Add win screen
+            change_movement(puking);
+            cur_anim_time++;
+
+            int sum = 0;
+            for (int i: anim->second) sum += i;
+            int blur_per_frame = (255-drunkenness::blur)/sum;
+
+            while (cur_anim_frame || cur_anim_time)
+            {
+                SDL_FlushEvents(SDL_FIRSTEVENT,SDL_LASTEVENT);
+
+                Object::update(true);
+                drunkenness::blur += blur_per_frame;
+
+                render_everything(false);
+                limit_fps();
+            }
+
+            visual_novel(load_image("winscreen"),"","",false);
             breakk = true;
+            return;
         }
 
         drunkenness::movement_speed = drunkenness::base_movement_speed;

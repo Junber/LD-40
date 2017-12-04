@@ -39,14 +39,19 @@ bool add_new_backgrounds()
         if (walls_since_bar > 22-player->drunk_level*3)
         {
             auto d = new Background(walls_end_at+65,40,"door",true);
-            b->cur_anim_frame=7;
+            b->cur_anim_frame=8;
             new Entrance(walls_end_at+65,0,30,b->size[1]+90,d);
             walls_since_bar = 0;
         }
         else
         {
-            b->cur_anim_frame=random(0,6);
-            if (b->cur_anim_frame <= 2 && !random(0,1)) new Background(walls_end_at+random(10,b->size[0]-50),random(10,b->size[1]-60),"poster",true);
+            b->cur_anim_frame=random(0,9);
+            if (b->cur_anim_frame >= 8) b->cur_anim_frame -= 8;
+            if (b->cur_anim_frame <= 1 && !random(0,1))
+            {
+                auto p = new Background(walls_end_at+random(5,b->size[0]-50),random(5,b->size[1]-70),"poster",true);
+                p->cur_anim_frame = random(0,2);
+            }
         }
 
         walls_end_at += b->size[0];
@@ -60,7 +65,7 @@ bool add_new_backgrounds()
 
         if (window[0]/4 < sidewalks_end_at || -window[0]/4 > sidewalks_end_at)
         {
-            if (!random(0,5))
+            if (!random(0,5)) //bin
             {
                 Hitbox* h = new Hitbox(sidewalks_end_at,random(81,105),"bin",true);
                 if (!random(0,1)) b->cur_anim_frame=1;
@@ -70,9 +75,10 @@ bool add_new_backgrounds()
                 h->gen_corners();
             }
 
-            if (!random(0,5))
+            if (!random(0,5)) //mailbox
             {
-                Hitbox* h = new Hitbox(sidewalks_end_at,random(68,98),"mailbox",false);
+                const bool monster = drunkenness::mailbox_monster && !random(0,1);
+                Hitbox* h = new Hitbox(sidewalks_end_at,random(68,98),monster?"mailboxmonster":"mailbox",true);
 
                 h->hitbox_size[1] = 12;
                 h->hitbox_offset[1] = 15;

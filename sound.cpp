@@ -48,21 +48,9 @@ void sound_init_update()
     }
 }
 
-int selfcut_channel[3]={-1,-1};
-void play_sound(Mix_Chunk* s, int selfcut)
+void play_sound(Mix_Chunk* s)
 {
-    selfcut--;
-
-    if (s!=nullptr)
-    {
-        int channel = Mix_PlayChannel((selfcut&&(selfcut_channel[selfcut]!=-1))?selfcut_channel[selfcut]:-1, s, 0);
-
-        for (int i=0;i<=2;i++)
-        {
-            if (i == selfcut) selfcut_channel[i] = channel;
-            else if (channel == selfcut_channel[selfcut]) selfcut_channel[selfcut] = -1;
-        }
-    }
+    Mix_PlayChannel(-1, s, 0);
 }
 
 void play_music(Mix_Music* s)

@@ -5,7 +5,7 @@
 
 enum player_movement
 {
-    auto_runner, in_control, stumble, sway, walking_up, stop, collide, fall, die, revive
+    auto_runner, in_control, stumble, sway, walking_up, stop, collide, fall, die, revive, puking
 };
 
 class Player;

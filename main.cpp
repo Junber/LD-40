@@ -26,7 +26,11 @@ int time_since_car = 0;
 void update()
 {
     time_since_car++;
-    if (!random(0,50)) new Pedestrian(camera[0]-camera_x_offset+window[0]+20, random(70,106), (random(0,1)?-1:1), "ped"+std::to_string(random(1,6)), true);
+    if (!random(0,50))
+    {
+        bool flamingo = drunkenness::flamingo_people && !random(0,2);
+        new Pedestrian(camera[0]-camera_x_offset+window[0]+20, random(70,106), (random(0,1)?-1:1), flamingo?"flamingo":"ped"+std::to_string(random(1,6)), true);
+    }
     if (time_since_car >= 100 && !random(0,100))
     {
         auto p = new Pedestrian(camera[0]-camera_x_offset+window[0]+100, window[1]-47, -3, "car"+std::to_string(random(1,4)), false);
@@ -117,7 +121,6 @@ int main(int argc, char* args[])
 			{
 			    if (e.key.keysym.sym == SDLK_ESCAPE) options();
 			    else if (e.key.keysym.sym == SDLK_e) player->drink(15);
-			    else if (e.key.keysym.sym == SDLK_r) player->change_movement(sway);
 			    else if (e.key.keysym.sym == SDLK_q) dialog("test",load_image("bar"));
 			    else if (e.key.keysym.sym == SDLK_f) player->change_movement(stumble);
 			}
@@ -125,11 +128,10 @@ int main(int argc, char* args[])
 
         update();
         add_new_backgrounds();
-        render();
+        render_everything();
 
         //std::cout << camera[0];
 
-        SDL_RenderPresent(renderer);
         limit_fps();
     }
 

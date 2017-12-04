@@ -11,7 +11,7 @@
 
 struct drink
 {
-    std::string name;
+    std::string name_uncut, name_cut;
     int alcohol;
 };
 
@@ -28,8 +28,16 @@ void load_drinks()
         auto sp = split(line, ':');
 
         drink* d = new drink();
-        d->name = sp[0];
         d->alcohol = std::stoi(sp[1]);
+
+        auto spl = split(sp[0],'-');
+        if (spl.size() > 1)
+        {
+            d->name_uncut = spl[0]+spl[1];
+            d->name_cut = spl[0]+" \n"+spl[1];
+        }
+        else d->name_uncut = d->name_cut = sp[0];
+
         drinks.push_back(d);
     }
     file.close();
@@ -84,11 +92,15 @@ void options()
 			    else if (e.key.keysym.sym == SDLK_w)
                 {
                     pointer--;
+                    if (pointer==1 && *value[0]) pointer--;
+
                     if (pointer<0) pointer = option_num-1;
                 }
 			    else if (e.key.keysym.sym == SDLK_s)
                 {
                     pointer++;
+                    if (pointer==1 && *value[0]) pointer++;
+
                     if (pointer>=option_num) pointer = 0;
                 }
 			}
@@ -99,7 +111,7 @@ void options()
 
         for (int i=0; i<option_num;i++)
         {
-            render_text(50,50+i*20,text[i]+(value[i]?": "+std::to_string(*value[i]):""),255);
+            render_text(50,50+i*20,text[i]+(value[i]?": "+std::to_string(*value[i]):""),(i==1 && *value[0])?100:255);
         }
 
         SDL_Rect r = {45-w,58+pointer*20,w,h};
@@ -117,7 +129,7 @@ bool visual_novel(SDL_Texture* tex, std::string text, std::string text2, bool pl
         *middle = load_image("middle");
 
     int height = add_newlines(text ,choice?88:158);
-    if (choice) add_newlines(text2,88);
+    if (choice) height = std::max(height,add_newlines(text2,88));
 
     int move_out = 0;
 
@@ -199,15 +211,16 @@ void dialog(std::string file_name, SDL_Texture* tex)
             if (!selected_drink)
             {
                 drink *drink1 = random_drink(), *drink2 = random_drink();
-                selected_drink = visual_novel(tex,drink1->name, drink2->name, player_talking) ? drink2 : drink1;
+                selected_drink = visual_novel(tex,drink1->name_cut, drink2->name_cut, player_talking) ? drink2 : drink1;
             }
 
             auto sp = split(line, '#');
 
-            visual_novel(tex,sp[0]+selected_drink->name+sp[1],"",player_talking);
+            visual_novel(tex,sp[0]+selected_drink->name_uncut+sp[1],"",player_talking);
         }
         else
         {
+            if (line.substr(0,6) == "*Gulp*") play_sound(load_sound("drink"));
             visual_novel(tex,line,"",player_talking);
         }
     }

@@ -14,6 +14,9 @@ SDL_Renderer* renderer;
 const int window[2] = {320,180};
 int zoom = 1, fullscreen = false;
 
+SDL_Texture* beermeter_tex;
+int beermeter_w, beermeter_h;
+
 void load_option_rendering(std::string s, std::string s2)
 {
     if (s == "fullscreen") fullscreen = atoi(s2.c_str());
@@ -32,6 +35,10 @@ void render_init()
     renderer = SDL_CreateRenderer(renderwindow, -1, SDL_RENDERER_ACCELERATED);
 
     SDL_RenderSetLogicalSize(renderer, window[0], window[1]);
+
+    beermeter_tex = load_image("beermeter");
+    SDL_QueryTexture(beermeter_tex,nullptr,nullptr,&beermeter_w,&beermeter_h);
+    beermeter_h /= 15;
 }
 
 void render_init_update()
@@ -96,7 +103,7 @@ bool sort_criteria(Object* a, Object* b)
 }
 
 // TODO (Junber#1#): Add drunkenness UI
-void render()
+void render_everything(bool blink)
 {
     for (Background* o: backgrounds)
     {
@@ -108,5 +115,13 @@ void render()
         o->render();
     }
 
-    blinking();
+    if (drunkenness::see_ui)
+    {
+        SDL_Rect src = {0,player->alcohol_points*beermeter_h,beermeter_w,beermeter_h}, dest = {5,5,beermeter_w,beermeter_h};
+        SDL_RenderCopy(renderer, beermeter_tex, &src, &dest);
+    }
+
+    if (blink) blinking();
+
+    SDL_RenderPresent(renderer);
 }

@@ -28,15 +28,24 @@ int add_newlines(std::string &s, int width)
     int cur_width, height=0;
     for (std::string st: splitt)
     {
-        TTF_SizeText(font,(part+" "+st).c_str(), &cur_width, nullptr);
-
-        if (cur_width <= width)
-            part += " "+st;
+        if (st[0] == '\n')
+        {
+            ret += part+"-\n";
+            part = st.substr(1);
+            ++height;
+        }
         else
         {
-            ret += part+"\n";
-            part = st;
-            ++height;
+            TTF_SizeText(font,(part+" "+st).c_str(), &cur_width, nullptr);
+
+            if (cur_width <= width)
+                part += " "+st;
+            else
+            {
+                ret += part+"\n";
+                part = st;
+                ++height;
+            }
         }
     }
 

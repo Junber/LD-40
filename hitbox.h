@@ -6,6 +6,7 @@
 class Hitbox: public Object
 {
 public:
+    bool animated_already, animating_now;
     Hitbox(int x, int y, int sx, int sy);
     Hitbox(int x, int y, std::string s, bool load_as_animation = false, bool adjust_pos=true);
 
