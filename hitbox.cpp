@@ -20,10 +20,13 @@ Hitbox::Hitbox(int x, int y, int sx, int sy): Object(x,y,"")
     gen_corners();
 }
 
-Hitbox::Hitbox(int x, int y, std::string s, bool load_as_animation): Object(x,y,s,load_as_animation)
+Hitbox::Hitbox(int x, int y, std::string s, bool load_as_animation, bool adjust_pos): Object(x,y,s,load_as_animation)
 {
-    pos[0] += size[0]/2;
-    pos[1] += size[1]/2;
+    if (adjust_pos)
+    {
+        pos[0] += size[0]/2;
+        pos[1] += size[1]/2;
+    }
 
     gen_corners();
 }
@@ -49,4 +52,30 @@ void Hitbox::update(bool increase_anim_time)
 
         //std::cout << hitbox_size[0] << " " << corners[0][0] << " " << corners[3][0] << " " << player->pos[0]-player->hitbox_size[0]/2 << "\n";
     }
+}
+
+Pedestrian::Pedestrian(int x, int y, int direction, std::string s) : Hitbox(x,y,s,true,false)
+{
+    delete_on_restart.push_back(this);
+    di = direction;
+    flipped = di<0;
+
+    hitbox_size[0] = 9;
+    hitbox_size[1] = 3;
+    hitbox_offset[1] = 18;
+}
+
+Pedestrian::~Pedestrian()
+{
+    remove_it(&delete_on_restart,(Object*)this);
+}
+
+void Pedestrian::update(bool increase_anim_time)
+{
+    pos[0] += di;
+    cur_anim_time += abs(di);
+    gen_corners();
+
+    Hitbox::update();
+    Object::update(false);
 }

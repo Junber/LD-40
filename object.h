@@ -40,6 +40,6 @@ public:
     bool collides(Object* o);
 };
 
-extern std::deque<Object*> objects;
+extern std::deque<Object*> objects, delete_on_restart;
 
 #endif // _OBJECT

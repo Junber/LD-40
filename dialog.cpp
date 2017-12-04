@@ -44,8 +44,8 @@ bool visual_novel(SDL_Texture* tex, std::string text, std::string text2, bool pl
     SDL_Texture *top = load_image("top_"+std::string(player?"play":"bar")), *bottom = load_image("bottom_"+std::string(player?"play":"bar")),
         *middle = load_image("middle");
 
-    int height = add_newlines(text ,choice?60:130);
-    if (choice) add_newlines(text2,60);
+    int height = add_newlines(text ,choice?88:158);
+    if (choice) add_newlines(text2,88);
 
     int move_out = 0;
 
@@ -77,7 +77,7 @@ bool visual_novel(SDL_Texture* tex, std::string text, std::string text2, bool pl
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer,tex,nullptr,nullptr);
 
-        SDL_Rect r = {26,20,180,20};
+        SDL_Rect r = {12,20,208,20};
         SDL_RenderCopy(renderer,top,nullptr,&r);
         while (r.y <= height-16)
         {
@@ -87,12 +87,12 @@ bool visual_novel(SDL_Texture* tex, std::string text, std::string text2, bool pl
         r.y += 20;
         SDL_RenderCopy(renderer,bottom,nullptr,&r);
 
-        render_text(51 +(decision?0:move_out)/2,25+(decision?move_out:0),text ,0,std::max(0,255-7*(decision?move_out:0)));
+        render_text(37 +(decision?0:move_out)/2,25+(decision?move_out:0),text ,0,std::max(0,255-7*(decision?move_out:0)));
         if (choice)
         {
             if (move_out>0) move_out++;
 
-            render_text(181-(decision?move_out:0)/2,25+(decision?0:move_out),text2,0,std::max(0,255-7*(decision?0:move_out)), true);
+            render_text(195-(decision?move_out:0)/2,25+(decision?0:move_out),text2,0,std::max(0,255-7*(decision?0:move_out)), true);
 
             if (move_out >= 100) return decision;
         }

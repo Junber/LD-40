@@ -6,7 +6,7 @@
 #include <fstream>
 #include <map>
 
-std::deque<Object*> objects;
+std::deque<Object*> objects, delete_on_restart;
 
 int camera[2] = {0,0};
 int camera_x_offset = 0;

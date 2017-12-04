@@ -165,4 +165,6 @@ void Player::kill()
     pos[0] = saved_pos[0];
     pos[1] = saved_pos[1];
     camera_x_offset = 0;
+
+    while (!delete_on_restart.empty()) delete delete_on_restart[0];
 }

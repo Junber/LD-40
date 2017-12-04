@@ -15,6 +15,7 @@
 #include "background.h"
 #include "sound.h"
 #include "dialog.h"
+#include "hitbox.h"
 
 #ifndef _STATIC
 void *__gxx_personality_v0;
@@ -23,6 +24,8 @@ void *__gxx_personality_v0;
 bool sway_at_next_opportunity=false;
 void update()
 {
+    if (!random(0,50)) new Pedestrian(camera[0]+window[0]+20, random(70,156), (random(0,1)?-1:1), "ped"+std::to_string(random(1,6)));
+
     if (drunkenness::speed_randomness && !random(0,30))
     {
         drunkenness::movement_speed = drunkenness::base_movement_speed+random(-1,1);
