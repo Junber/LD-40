@@ -53,7 +53,7 @@ drink* random_drink()
 #define option_num 5
 void options()
 {
-    std::string text[option_num] = {"Fullscreen","Zoom","SFX Volume","Music Volume","Exit"};
+    std::string text[option_num] = {"Fullscreen","Zoom","SFX Volume","Music Volume","Exit Game"};
     int *value[option_num] = {&fullscreen, &zoom, &sfx_volume, &music_volume, nullptr};
     int range_max[option_num] = {1,9,128,128,0};
     int range_min[option_num] = {0,1,0,0,0};

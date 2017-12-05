@@ -36,7 +36,7 @@ Hitbox::Hitbox(int x, int y, std::string s, bool load_as_animation, bool adjust_
 
 void Hitbox::update(bool increase_anim_time)
 {
-    if (player->is_in_control() && collides(player))
+    if (hitbox_size[0] > 0 && player->is_in_control() && collides(player))
     {
         if (drunkenness::auto_running)
         {
@@ -57,6 +57,8 @@ void Hitbox::update(bool increase_anim_time)
                 player->pos[dir] += sign(player->pos[dir]+player->hitbox_offset[dir]-pos[dir]-hitbox_offset[dir]);
                 player->gen_corners();
             } while (collides(player));
+
+            player->change_movement(collide);
         }
 
         //std::cout << hitbox_size[0] << " " << corners[0][0] << " " << corners[3][0] << " " << player->pos[0]-player->hitbox_size[0]/2 << "\n";

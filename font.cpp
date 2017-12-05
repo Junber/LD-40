@@ -39,7 +39,7 @@ int add_newlines(std::string &s, int width)
             TTF_SizeText(font,(part+" "+st).c_str(), &cur_width, nullptr);
 
             if (cur_width <= width)
-                part += " "+st;
+                part += (part.empty()?"":" ")+st;
             else
             {
                 ret += part+"\n";

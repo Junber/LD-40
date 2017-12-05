@@ -29,7 +29,8 @@ void update()
     if (!random(0,50))
     {
         bool flamingo = drunkenness::flamingo_people && !random(0,2);
-        new Pedestrian(camera[0]-camera_x_offset+window[0]+20, random(70,140), (random(0,1)?-1:1), flamingo?"flamingo":"ped"+std::to_string(random(1,6)), true);
+        new Pedestrian(camera[0]-camera_x_offset+window[0]+20, random(0,5)?random(70,140):player->pos[1],
+                       (random(0,1)?-1:1), flamingo?"flamingo":"ped"+std::to_string(random(1,6)), true);
     }
     if (time_since_car >= 100 && !random(0,100))
     {
@@ -117,6 +118,7 @@ int main(int argc, char* args[])
     sound_init();
 
     visual_novel(load_image("startscreen"),"","",false);
+    visual_novel(load_image("drinkscreen"),"","",false);
 
     player = new Player();
 

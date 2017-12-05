@@ -286,7 +286,7 @@ void Player::drink(int alcohol)
         {
             drunkenness::auto_running = false;
             camera_x_offset = 0;
-            drunkenness::blick_frequency = 800;
+            drunkenness::blick_frequency = 1000;
             drunkenness::fast_blinking = false;
             drunkenness::mailbox_monster = true;
         }
@@ -295,7 +295,7 @@ void Player::drink(int alcohol)
             drunkenness::blur = 40;
             drunkenness::base_movement_speed = -2;
             drunkenness::swaying = 1800;
-            drunkenness::blick_frequency = 600;
+            drunkenness::blick_frequency = 800;
             drunkenness::see_ui = false;
             drunkenness::flamingo_people = true;
             play_music(load_music("Barjazz2"));

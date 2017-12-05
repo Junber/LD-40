@@ -50,7 +50,7 @@ void sound_init_update()
 
 void play_sound(Mix_Chunk* s)
 {
-    Mix_PlayChannel(-1, s, 0);
+    if (s!= nullptr) Mix_PlayChannel(-1, s, 0);
 }
 
 void play_music(Mix_Music* s)
