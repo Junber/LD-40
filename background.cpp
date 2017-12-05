@@ -36,11 +36,11 @@ bool add_new_backgrounds()
         auto b = new Background(walls_end_at,0,"wall",true);
 
         walls_since_bar++;
-        if (walls_end_at > 0 && walls_since_bar > 22-player->drunk_level*3)
+        if (walls_end_at > 0 && walls_since_bar > 23-player->drunk_level*4)
         {
             auto d = new Background(walls_end_at+65,40,"door",true);
             b->cur_anim_frame=8;
-            new Entrance(walls_end_at+65,0,30,b->size[1]+90,d);
+            new Entrance(walls_end_at+80,0,30,b->size[1]+90,d);
             walls_since_bar = 0;
         }
         else

@@ -6,4 +6,4 @@ zoom:3
 
 #changes the volume for sfx/music. can be set to something between 0 and 128
 sfx:64
-music:64
+music:0

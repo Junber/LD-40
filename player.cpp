@@ -36,6 +36,7 @@ void Player::assign_keys()
 
 Player::Player(): Object(0,window[1]/2,"walk1",true)
 {
+    time_to_puke=-1;
     drunk_level = 1;
     alcohol_points = 0;
     dialog_this_level=0;
@@ -241,6 +242,32 @@ void Player::kill()
     delete_all_the_shit = true;
 }
 
+void Player::puke()
+{
+    change_movement(puking);
+    cur_anim_time++;
+
+    int sum = 0;
+    for (int i: anim->second) sum += i;
+    int blur_per_frame = (255-drunkenness::blur)/sum;
+
+    while (cur_anim_frame || cur_anim_time)
+    {
+        SDL_FlushEvents(SDL_FIRSTEVENT,SDL_LASTEVENT);
+
+        Object::update(true);
+        drunkenness::blur += blur_per_frame;
+
+        if (cur_anim_frame==5 && !cur_anim_time) play_sound(load_sound("vomit"));
+
+        render_everything(false);
+        limit_fps();
+    }
+
+    visual_novel(load_image("winscreen"),"","",false);
+    breakk = true;
+}
+
 void Player::drink(int alcohol)
 {
     alcohol_points += alcohol;
@@ -268,7 +295,7 @@ void Player::drink(int alcohol)
             drunkenness::blur = 40;
             drunkenness::base_movement_speed = -2;
             drunkenness::swaying = 1800;
-            drunkenness::blick_frequency = 500;
+            drunkenness::blick_frequency = 600;
             drunkenness::see_ui = false;
             drunkenness::flamingo_people = true;
             play_music(load_music("Barjazz2"));
@@ -282,29 +309,9 @@ void Player::drink(int alcohol)
         }
         else
         {
-            change_movement(puking);
-            cur_anim_time++;
-
-            int sum = 0;
-            for (int i: anim->second) sum += i;
-            int blur_per_frame = (255-drunkenness::blur)/sum;
-
-            while (cur_anim_frame || cur_anim_time)
-            {
-                SDL_FlushEvents(SDL_FIRSTEVENT,SDL_LASTEVENT);
-
-                Object::update(true);
-                drunkenness::blur += blur_per_frame;
-
-                if (cur_anim_frame==5 && !cur_anim_time) play_sound(load_sound("vomit"));
-
-                render_everything(false);
-                limit_fps();
-            }
-
-            visual_novel(load_image("winscreen"),"","",false);
-            breakk = true;
-            return;
+            drunk_level--;
+            alcohol_points = 15;
+            time_to_puke=300;
         }
 
         drunkenness::movement_speed = drunkenness::base_movement_speed;

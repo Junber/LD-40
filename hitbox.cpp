@@ -86,9 +86,16 @@ Pedestrian::Pedestrian(int x, int y, int direction, std::string s, bool load_as_
     di = direction;
     flipped = di<0;
 
-    hitbox_size[0] = 9;
-    hitbox_size[1] = 3;
-    hitbox_offset[1] = 18;
+    if (!drunkenness::auto_running)
+    {
+        hitbox_size[0] = hitbox_size[1] = 0;
+    }
+    else
+    {
+        hitbox_size[0] = 9;
+        hitbox_size[1] = 3;
+        hitbox_offset[1] = 18;
+    }
 }
 
 Pedestrian::~Pedestrian()

@@ -36,11 +36,24 @@ void update()
         auto p = new Pedestrian(camera[0]-camera_x_offset+window[0]+100, window[1]-47, -3, "car"+std::to_string(random(1,4)), false);
 
         p->flipped = false;
-        p->hitbox_size[0] = 146;
-        p->hitbox_size[1] = 21;
-        p->hitbox_offset[1] = 36;
+        if (!drunkenness::auto_running)
+        {
+            p->hitbox_size[0] = p->hitbox_size[1] = 0;
+        }
+        else
+        {
+            p->hitbox_size[0] = 146;
+            p->hitbox_size[1] = 21;
+            p->hitbox_offset[1] = 36;
+        }
 
         time_since_car = 0;
+    }
+
+    if (player->time_to_puke > 0)
+    {
+        player->time_to_puke--;
+        if (!player->time_to_puke) player->puke();
     }
 
 
@@ -119,7 +132,7 @@ int main(int argc, char* args[])
 
 			else if (e.type == SDL_KEYDOWN)
 			{
-			    //if (e.key.keysym.sym == SDLK_ESCAPE) options();
+			    if (e.key.keysym.sym == SDLK_ESCAPE) options();
 			    //else if (e.key.keysym.sym == SDLK_e) player->drink(15);
 			    //else if (e.key.keysym.sym == SDLK_q) dialog("test",load_image("bar"));
 			    //else if (e.key.keysym.sym == SDLK_f) player->change_movement(stumble);
