@@ -12,6 +12,8 @@ int sign(int x)
 
 Hitbox::Hitbox(int x, int y, int sx, int sy): Object(x,y,"")
 {
+	fading = 0;
+
     hitbox_size[0] = size[0] = sx;
     hitbox_size[1] = size[1] = sy;
 
@@ -25,6 +27,8 @@ Hitbox::Hitbox(int x, int y, int sx, int sy): Object(x,y,"")
 
 Hitbox::Hitbox(int x, int y, std::string s, bool load_as_animation, bool adjust_pos): Object(x,y,s,load_as_animation)
 {
+	fading = 0;
+
     if (adjust_pos)
     {
         pos[0] += size[0]/2;
@@ -36,7 +40,7 @@ Hitbox::Hitbox(int x, int y, std::string s, bool load_as_animation, bool adjust_
 
 void Hitbox::update(bool increase_anim_time)
 {
-    if (hitbox_size[0] > 0 && player->is_in_control() && collides(player))
+    if (hitbox_size[0] > 0 && !fading && player->is_in_control() && collides(player))
     {
         if (drunkenness::auto_running)
         {
@@ -61,10 +65,12 @@ void Hitbox::update(bool increase_anim_time)
             player->change_movement(collide);
         }
 
+        fading = 1;
+
         //std::cout << hitbox_size[0] << " " << corners[0][0] << " " << corners[3][0] << " " << player->pos[0]-player->hitbox_size[0]/2 << "\n";
     }
 
-    if (increase_anim_time && !animated_already)
+    if (increase_anim_time && !animated_already && !fading)
     {
         if (animating_now)
         {
@@ -80,6 +86,26 @@ void Hitbox::update(bool increase_anim_time)
             animating_now = true;
         }
     }
+
+    if (fading)
+	{
+		fading += 10;
+		--pos[1];
+		if (fading > drunkenness::blur)
+		{
+			to_delete.push_back(this);
+		}
+	}
+}
+
+void Hitbox::render()
+{
+    SDL_Rect dest={pos[0]-size[0]/2-camera[0]+camera_x_offset, pos[1]-size[1]/2-camera[1], size[0], size[1]},
+                src = {0, size[1]*cur_anim_frame, size[0], size[1]};
+
+    SDL_SetTextureAlphaMod(anim->first,drunkenness::blur - fading);
+
+    SDL_RenderCopyEx(renderer, anim->first, &src, &dest, rotation, nullptr, flipped?SDL_FLIP_HORIZONTAL:SDL_FLIP_NONE);
 }
 
 Pedestrian::Pedestrian(int x, int y, int direction, std::string s, bool load_as_animation) : Hitbox(x,y,s,load_as_animation,false)
@@ -107,9 +133,12 @@ Pedestrian::~Pedestrian()
 
 void Pedestrian::update(bool increase_anim_time)
 {
-    pos[0] += di;
-    cur_anim_time += abs(di);
-    gen_corners();
+	if (!fading)
+	{
+		pos[0] += di;
+		cur_anim_time += abs(di);
+		gen_corners();
+	}
 
     Hitbox::update(false);
     Object::update(false);

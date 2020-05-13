@@ -81,6 +81,12 @@ void update()
         if (o != player) o->update();
     }
 
+    for (Object* o: to_delete)
+	{
+		delete o;
+	}
+	to_delete.clear();
+
     if (delete_all_the_shit)
     {
         while (!delete_on_restart.empty()) delete delete_on_restart[0];

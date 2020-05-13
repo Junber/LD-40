@@ -158,14 +158,21 @@ void Player::update(bool increase_anim_time)
         pos[1] -= drunkenness::movement_speed;
         gen_corners();
     }
-    else if (cur_movement == collide || cur_movement == revive)
+    else if (cur_movement == collide)
     {
         cur_anim_time++;
         if (cur_anim_time >= anim->second[cur_anim_frame] && cur_anim_frame >= anim->second.size()-1)
         {
             change_movement(drunkenness::auto_running?auto_runner:in_control);
-            if (pos[1] < 110) pos[1] += 20;
-            else pos[1] -= 20;
+        }
+    }
+    else if (cur_movement == revive)
+    {
+        cur_anim_time++;
+        if (cur_anim_time >= anim->second[cur_anim_frame] && cur_anim_frame >= anim->second.size()-1)
+        {
+            change_movement(drunkenness::auto_running?auto_runner:in_control);
+			pos[0] -= 15;
 
             gen_corners();
         }
@@ -176,6 +183,9 @@ void Player::update(bool increase_anim_time)
         if (cur_anim_time >= anim->second[cur_anim_frame] && cur_anim_frame >= anim->second.size()-1)
         {
             change_movement(revive);
+            pos[0] += 15;
+            pos[1] += 3;
+            gen_corners();
         }
     }
     else if (cur_movement == die)

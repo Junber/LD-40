@@ -2,11 +2,12 @@
 #include "rendering.h"
 #include "base.h"
 
+#include <cmath>
 #include <iostream>
 #include <fstream>
 #include <map>
 
-std::deque<Object*> objects, delete_on_restart;
+std::deque<Object*> objects, delete_on_restart, to_delete;
 bool delete_all_the_shit;
 
 int camera[2] = {0,0};
